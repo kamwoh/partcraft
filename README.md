@@ -3,7 +3,7 @@
 # DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination
 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
-<a href="https://dreamwireart.github.io/"><img alt="page" src="https://img.shields.io/badge/Webpage-0054a6?logo=Google%20chrome&logoColor=white"></a>
+<a href="https://kamwoh.github.io/dreamcreature/"><img alt="page" src="https://img.shields.io/badge/Webpage-0054a6?logo=Google%20chrome&logoColor=white"></a>
 [![Page Views Count](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56/blue.svg)](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56 "Get your own page views count badge on badges.toozhao.com")
 
 </div>
