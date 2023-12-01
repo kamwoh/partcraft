@@ -1,16 +1,269 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DreamCreature</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
-</head>
-<body>
-    <header>
-        <h1>DreamCreature</h1>
-    </header>
+<html>
 
-    To be updated
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>DreamCreature</title>
+
+    <meta name="description"
+        content="DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- <base href="/"> -->
+
+    <!--     <link rel="apple-touch-icon" href="apple-touch-icon.png"> -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128038;</text></svg>">
+    <!-- Place favicon.ico in the root directory -->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.css">
+    <link rel="stylesheet" href="./css/app.css">
+
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.8.0/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.3/clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+
+    <link rel="stylesheet" href="./css/dics.min.css">
+    <script src="./js/dics.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', domReady);
+        function domReady() {
+            for (const e of document.querySelectorAll(".b-dics")) {
+                new Dics({
+                    container: e,
+                    textPosition: "top"
+                });
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container" id="main">
+        <div class="row">
+            <h2 class="col-md-12 text-center">
+               &#128038;<b>DreamCreature</b>: Crafting Photorealistic Virtual Creatures from Imagination &#128038;</br>
+<!--                 <small>
+                    arXiv
+                </small> -->
+                <img src="https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56/blue.svg" />
+            </h2>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <ul class="list-inline">
+                    <li>
+                        <a href="https://kamwoh.github.io/">
+                          Kam Woh Ng<sup>1,2</sup><sup>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://xiatian-zhu.github.io/">
+                          Xiatian Zhu<sup>1,3</sup>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.surrey.ac.uk/people/yi-zhe-song">
+                          Yi-Zhe Song<sup>1,2</sup>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.surrey.ac.uk/people/tao-xiang">
+                            Tao Xiang<sup>1,2</sup>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="list-inline">
+                    <li>
+                        CVSSP, University of Surrey<sup>1</sup>
+                    </li>
+                    <li>
+                        iFlyTek-Surrey Joint Research Centre<sup>2</sup>
+                    </li>
+                    <li>
+                        Surrey Institute for People-Centred AI<sup>3</sup>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 text-center">
+                <ul class="nav nav-pills nav-justified">
+                    <li>
+                        <a href="https://arxiv.org/abs/2311.15477">
+<!--                             <image src="/assets/img/merf/paper.png" height="120px"> -->
+                                <h4><strong>Paper</strong></h4>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/kamwoh/dreamcreature">
+<!--                             <image src="/assets/img/merf/github_pad.png" height="120px"> -->
+                                <h4><strong>Code</strong></h4>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <image src="assets/fig1.png" style="width:100%;" class="img-responsive center-block" alt="overview"><br>
+            </div>
+        </div>
+
+<!--         <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Video
+                </h3>
+                <div class="text-center">
+                    <div style="position:relative;padding-top:56.25%;">
+                        <iframe src="https://www.youtube.com/watch?v=VM4xXJRcxwU" allowfullscreen
+                            style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    <b>Abstract</b>
+                </h3>
+                <p class="text-justify">
+                    Recent text-to-image (T2I) generative models allow for high-quality synthesis following either text instructions or visual examples. Despite their capabilities, these models face limitations in creating new, detailed creatures within specific categories (e.g., virtual dog or bird species), which are valuable in digital asset creation and biodiversity analysis. To bridge this gap, we introduce a novel task, Virtual Creatures Generation: Given a set of unlabeled images of the target concepts (e.g., 200 bird species), we aim to train a T2I model capable of creating new, hybrid concepts within diverse backgrounds and contexts. We propose a new method called DreamCreature, which identifies and extracts the underlying sub-concepts (e.g., body parts of a specific species) in an unsupervised manner. The T2I thus adapts to generate novel concepts (e.g., new bird species) with faithful structures and photorealistic appearance by seamlessly and flexibly composing learned sub-concepts. To enhance sub-concept fidelity and disentanglement, we extend the textual inversion technique by incorporating an additional projector and tailored attention loss regularization. Extensive experiments on two fine-grained image benchmarks demonstrate the superiority of DreamCreature over prior art alternatives in both qualitative and quantitative evaluation. Ultimately, the learned sub-concepts facilitate diverse creative applications, including innovative consumer product designs and nuanced property modifications.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    <b>Methodology</b>
+                </h3>
+                <br>
+                <image src="assets/fig4.png" style="width:100%;" class="img-responsive center-block" alt="overview">
+                <br>
+                <p class="text-justify">
+                     Overview of our DreamCreature. (Left) Discovering sub-concepts within a semantic hierarchy involves partitioning each image
+                     into distinct parts and forming semantic clusters across unlabeled training data. (Right) These clusters are organized into a dictionary,
+                     and their semantic embeddings are learned through a textual inversion approach. For instance, a text description like "a photo of a
+                     [Head,42] [Wing,87]..." guides the optimization of the corresponding textual embedding by reconstructing the associated image. To
+                     promote disentanglement among learned concepts, we minimize a specially designed attention loss, denoted as \( \mathcal{L}_{attn} \).
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    <b>Mixing Sub-concepts</b>
+                </h3>
+                <br>
+                <image src="assets/fig2.png" style="width:100%;" class="img-responsive center-block" alt="overview">
+                <br>
+                <p class="text-justify">
+                    Integrating a specific sub-concept (e.g., body, head, or even background) of a source concept B to the target concept A.
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    <b>Comparison</b>
+                </h3>
+                <br>
+                <image src="assets/compare_full.png" style="width:100%;" class="img-responsive center-block" alt="overview">
+                <br>
+                <p class="text-justify">
+                    Visual comparison on 4-species (specified on the top row) hybrid generation. The last column indicates generated images with
+different styles (i.e., DSLR, Van Gogh, Oil Painting, Pencil Drawing).
+                    While all images appear realistic, most methods struggle to assemble all 4 subconcepts. In contrast, our methods successfully combine
+                    4 different sub-concepts from 4 different species, demonstrating the superior ability of our approach to sub-concept composition.
+                </p>
+                <br>
+                <h4>
+                    <b>More examples</b>
+                </h4>
+                <br>
+                <image src="assets/moreexamples.png" style="width:100%;" class="img-responsive center-block" alt="overview">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    <b>Creative Generation</b>
+                </h3>
+                <br>
+                <image src="assets/creativegeneration.png" style="width:100%;" class="img-responsive center-block" alt="overview">
+                <br>
+                <p class="text-justify">
+                    We demonstrate that not only it can compose subconcepts within the domain of the target concepts (e.g.,
+                    birds), but it can also transfer the learned sub-concepts to and combine with other domains (e.g., cat).
+                    This enables the creation of unique combinations, such as a cat with a dog’s ear.
+                    Leveraging the prior knowledge embedded in Stable Diffusion, DreamCreature can also repurpose learned
+                    sub-concepts to design innovative digital assets.
+                    These examples showcase DreamCreature’s immense potential for diverse and limitless creative applications.
+                </p>
+            </div>
+        </div>
+
+<!--        <div class="row">-->
+<!--            <div class="col-md-8 col-md-offset-2">-->
+<!--                <h3>-->
+<!--                    <b>Acknowledgements</b>-->
+<!--                </h3>-->
+<!--                <p class="text-justify">-->
+<!--                </p>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    <b>Citation</b>
+                </h3>
+                <code>
+                    @misc{ng2023dreamcreature,
+                    <br>
+                      &nbsp; title={DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination},
+                    <br>
+                      &nbsp; author={Kam Woh Ng and Xiatian Zhu and Yi-Zhe Song and Tao Xiang},
+                    <br>
+                      &nbsp; year={2023},
+                    <br>
+                      &nbsp; eprint={2311.15477},
+                    <br>
+                      &nbsp; archivePrefix={arXiv},
+                    <br>
+                      &nbsp; primaryClass={cs.CV}
+                    <br>
+                    }
+                </code>
+            </div>
+        </div>
+
+
+    </div>
 </body>
+
 </html>
