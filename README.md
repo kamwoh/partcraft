@@ -14,6 +14,9 @@
 To bridge this gap, we introduce a novel task, **Virtual Creatures Generation**: Given a set of unlabeled images of the target concepts (e.g., 200 bird species), we aim to train a T2I model capable of creating new, hybrid concepts within diverse backgrounds and contexts.
 We propose a new method called **DreamCreature**, which identifies and extracts the underlying sub-concepts (e.g., body parts of a specific species) in an unsupervised manner. The T2I thus adapts to generate novel concepts (e.g., new bird species) with faithful structures and photorealistic appearance by seamlessly and flexibly composing learned sub-concepts. To enhance sub-concept fidelity and disentanglement, we extend the textual inversion technique by incorporating an additional projector and tailored attention loss regularization. Extensive experiments on two fine-grained image benchmarks demonstrate the superiority of DreamCreature over prior art alternatives in both qualitative and quantitative evaluation. Ultimately, the learned sub-concepts facilitate diverse creative applications, including innovative consumer product designs and nuanced property modifications.
 
+### Notes
+We are working on releasing the code... 🏗️ 🚧 🔨 Please stay tuned!  (I am cleaning up my messy code base & training a model with SDXL instead of SDv1.5 as mentioned in the paper)
+
 ### Methodology
 
 ![sourceAB](docs/assets/fig4.png)
@@ -44,5 +47,3 @@ Creative generation:
 
 ![creative](docs/assets/creativegeneration.png)
 
-### Notes
-We are working on releasing the code... 🏗️ 🚧 🔨 Please stay tuned!
