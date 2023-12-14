@@ -36,6 +36,7 @@ from accelerate.utils import ProjectConfiguration, set_seed
 from diffusers import AutoencoderKL, DDPMScheduler, UNet2DConditionModel
 from diffusers.loaders import AttnProcsLayers
 from diffusers.optimization import get_scheduler
+from diffusers.training_utils import compute_snr
 from diffusers.utils import check_min_version, is_wandb_available
 from diffusers.utils.import_utils import is_xformers_available
 from huggingface_hub import create_repo, upload_folder
@@ -43,7 +44,6 @@ from packaging import version
 from torchvision import transforms
 from torchvision.transforms import InterpolationMode
 from tqdm.auto import tqdm
-from diffusers.training_utils import compute_snr
 
 from dreamcreature.attn_processor import LoRAAttnProcessorCustom
 from dreamcreature.dataset import DreamCreatureDataset
@@ -51,10 +51,10 @@ from dreamcreature.dino import DINO
 from dreamcreature.kmeans_segmentation import KMeansSegmentation
 from dreamcreature.loss import dreamcreature_loss
 from dreamcreature.mapper import TokenMapper
+from dreamcreature.pipeline import DreamCreatureSDPipeline
 from dreamcreature.text_encoder import CustomCLIPTextModel
 from dreamcreature.tokenizer import MultiTokenCLIPTokenizer
-from dreamcreature.pipeline import DreamCreatureSDPipeline
-from utils import add_tokens, tokenize_prompt
+from utils import add_tokens, tokenize_prompt, get_attn_processors
 
 imagenet_templates = [
     "a photo of a {}",
@@ -429,7 +429,6 @@ def parse_args():
     return args
 
 
-
 def collate_fn(args, tokenizer, placeholder_token):
     train_resizecrop = transforms.Compose([
         transforms.Resize(int(args.resolution), InterpolationMode.BILINEAR),
@@ -498,7 +497,6 @@ def collate_fn(args, tokenizer, placeholder_token):
     return f
 
 
-
 def setup_attn_processor(unet, **kwargs):
     lora_attn_procs = {}
     for name in unet.attn_processors.keys():
@@ -523,7 +521,7 @@ def setup_attn_processor(unet, **kwargs):
 
 def load_attn_processor(unet, filename):
     logger.info(f'Load attn processors from {filename}')
-    lora_layers = AttnProcsLayers(unet.attn_processors)
+    lora_layers = AttnProcsLayers(get_attn_processors(unet))
     lora_layers.load_state_dict(torch.load(filename))
 
 
@@ -656,7 +654,7 @@ def main():
         else:
             raise ValueError("xformers is not available. Make sure it is installed correctly")
 
-    lora_layers = AttnProcsLayers(unet.attn_processors)
+    lora_layers = AttnProcsLayers(get_attn_processors(unet))
 
     # Enable TF32 for faster training on Ampere GPUs,
     # cf https://pytorch.org/docs/stable/notes/cuda.html#tensorfloat-32-tf32-on-ampere-devices
