@@ -4,8 +4,7 @@ from diffusers import UNet2DConditionModel
 from diffusers.models.attention_processor import Attention
 
 from dreamcreature.dino import DINO
-from kmeans_segmentation import KMeansSegmentation
-
+from dreamcreature.kmeans_segmentation import KMeansSegmentation
 
 
 def dreamcreature_loss(batch,
