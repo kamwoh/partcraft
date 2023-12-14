@@ -1,7 +1,7 @@
 from diffusers.models.attention_processor import *
 
 
-class LoRAAttnProcessorCustom(AttnProcessor):
+class LoRAAttnProcessorCustom(nn.Module, AttnProcessor):
     r"""
     Processor for implementing the LoRA attention mechanism.
 
