@@ -90,7 +90,7 @@ class KMeansSegmentation:
         if with_appeared_tokens:
             appeared_tokens = []
             for i in range(N):
-                appeared_tokens.append(torch.unique(coarse_labels[i].reshape(-1)))
+                appeared_tokens.append(torch.unique(coarse_labels[i].reshape(-1)).tolist())
             return appeared_tokens
 
         return segmasks
