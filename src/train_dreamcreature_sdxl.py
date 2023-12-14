@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Dict
 
 import datasets
+import diffusers
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -35,17 +36,6 @@ import transformers
 from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.utils import DistributedDataParallelKwargs, ProjectConfiguration, set_seed
-from huggingface_hub import create_repo, upload_folder
-from packaging import version
-from torchvision import transforms
-from torchvision.transforms.functional import crop
-from tqdm.auto import tqdm
-from transformers import PretrainedConfig
-
-import diffusers
-from dreamcreature.dino import DINO
-from dreamcreature.kmeans_segmentation import KMeansSegmentation
-from dreamcreature.attn_processor import AttnProcessorCustom
 from diffusers import (
     AutoencoderKL,
     DDPMScheduler,
@@ -53,18 +43,28 @@ from diffusers import (
     UNet2DConditionModel,
 )
 from diffusers.loaders import LoraLoaderMixin
-from diffusers.models.attention_processor import Attention, LoRAAttnProcessor
+from diffusers.models.attention_processor import LoRAAttnProcessor
 from diffusers.models.lora import LoRALinearLayer
 from diffusers.optimization import get_scheduler
 from diffusers.training_utils import compute_snr
 from diffusers.utils import check_min_version, is_wandb_available
 from diffusers.utils.import_utils import is_xformers_available
-from dreamcreature.pipeline_xl import DreamCreatureSDXLPipeline
-from dreamcreature.tokenizer import MultiTokenCLIPTokenizer
-from dreamcreature.text_encoder import CustomCLIPTextModel, CustomCLIPTextModelWithProjection
-from dreamcreature.mapper import TokenMapper
+from huggingface_hub import create_repo, upload_folder
+from packaging import version
+from torchvision import transforms
+from torchvision.transforms.functional import crop
+from tqdm.auto import tqdm
+from transformers import PretrainedConfig
+
+from dreamcreature.attn_processor import AttnProcessorCustom
 from dreamcreature.dataset import DreamCreatureDataset
+from dreamcreature.dino import DINO
+from dreamcreature.kmeans_segmentation import KMeansSegmentation
 from dreamcreature.loss import dreamcreature_loss
+from dreamcreature.mapper import TokenMapper
+from dreamcreature.pipeline_xl import DreamCreatureSDXLPipeline
+from dreamcreature.text_encoder import CustomCLIPTextModel, CustomCLIPTextModelWithProjection
+from dreamcreature.tokenizer import MultiTokenCLIPTokenizer
 from utils import add_tokens, tokenize_prompt
 
 IMAGENET_TEMPLATES = [
