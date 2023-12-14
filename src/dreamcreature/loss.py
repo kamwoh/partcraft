@@ -7,6 +7,7 @@ from dreamcreature.dino import DINO
 from kmeans_segmentation import KMeansSegmentation
 
 
+
 def dreamcreature_loss(batch,
                        unet: UNet2DConditionModel,
                        dino: DINO,
@@ -51,10 +52,13 @@ def dreamcreature_loss(batch,
     dino_input = dino.preprocess(raw_images, size=224)
     with torch.no_grad():
         dino_ft = dino.get_feat_maps(dino_input)
-        segmasks = seg.get_segmask(dino_ft).to(located_attn_map.dtype)  # (B, M, H, W)
+        segmasks, appeared_tokens = seg.get_segmask(dino_ft, True)  # (B, M, H, W)
+        segmasks = segmasks.to(located_attn_map.dtype)
+        if H != 16:  # for res 1024
+            segmasks = F.interpolate(segmasks, (H, W), mode='nearest')
 
         masks = []
-        for i, appeared in enumerate(batch['appeared_tokens']):
+        for i, appeared in enumerate(appeared_tokens):
             mask = (segmasks[i, appeared].sum(dim=0) > 0).float()  # (A, H, W) -> (H, W)
             masks.append(mask)
         masks = torch.stack(masks, dim=0)  # (B, H, W)

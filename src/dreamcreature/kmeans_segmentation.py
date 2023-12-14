@@ -52,7 +52,7 @@ class KMeansSegmentation:
 
         return fine_feats
 
-    def get_segmask(self, feat_map):
+    def get_segmask(self, feat_map, with_appeared_tokens=False):
         N, C, H, W = feat_map.size()
         query = feat_map.cuda().reshape(N, C, H * W).permute(0, 2, 1)  # (N, H*W, C)
 
@@ -86,6 +86,12 @@ class KMeansSegmentation:
             mask = (coarse_labels == m).float()  # (N, H, W)
             segmasks.append(mask)
         segmasks = torch.stack(segmasks, dim=1)  # (N, M, H, W)
+
+        if with_appeared_tokens:
+            appeared_tokens = []
+            for i in range(N):
+                appeared_tokens.append(torch.unique(coarse_labels[i]))
+            return appeared_tokens
 
         return segmasks
 

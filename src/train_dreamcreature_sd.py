@@ -43,6 +43,7 @@ from packaging import version
 from torchvision import transforms
 from torchvision.transforms import InterpolationMode
 from tqdm.auto import tqdm
+from diffusers.training_utils import compute_snr
 
 from dreamcreature.attn_processor import LoRAAttnProcessorCustom
 from dreamcreature.dataset import DreamCreatureDataset
@@ -53,6 +54,7 @@ from dreamcreature.mapper import TokenMapper
 from dreamcreature.text_encoder import CustomCLIPTextModel
 from dreamcreature.tokenizer import MultiTokenCLIPTokenizer
 from dreamcreature.pipeline import DreamCreatureSDPipeline
+from utils import add_tokens, tokenize_prompt
 
 imagenet_templates = [
     "a photo of a {}",
@@ -427,33 +429,6 @@ def parse_args():
     return args
 
 
-def get_mask(tokenizer, accelerator):
-    # Get the mask of the weights that won't change
-    mask = torch.ones(len(tokenizer)).to(accelerator.device, dtype=torch.bool)
-    for placeholder_token in tokenizer.token_map:
-        placeholder_token_ids = tokenizer.encode(placeholder_token, add_special_tokens=False)
-        for i in range(len(placeholder_token_ids)):
-            mask = mask & (torch.arange(len(tokenizer)) != placeholder_token_ids[i]).to(accelerator.device)
-    return mask
-
-
-def add_tokens(tokenizer, text_encoder, placeholder_token, num_vec_per_token=1, initializer_token=None):
-    """
-    Add tokens to the tokenizer and set the initial value of token embeddings
-    """
-    tokenizer.add_placeholder_tokens(placeholder_token, num_vec_per_token=num_vec_per_token)
-    text_encoder.resize_token_embeddings(len(tokenizer))
-    token_embeds = text_encoder.get_input_embeddings().weight.data
-    placeholder_token_ids = tokenizer.encode(placeholder_token, add_special_tokens=False)
-    if initializer_token:
-        token_ids = tokenizer.encode(initializer_token, add_special_tokens=False)
-        for i, placeholder_token_id in enumerate(placeholder_token_ids):
-            token_embeds[placeholder_token_id] = token_embeds[token_ids[i * len(token_ids) // num_vec_per_token]]
-    else:
-        for i, placeholder_token_id in enumerate(placeholder_token_ids):
-            token_embeds[placeholder_token_id] = torch.randn_like(token_embeds[placeholder_token_id])
-    return placeholder_token_ids
-
 
 def collate_fn(args, tokenizer, placeholder_token):
     train_resizecrop = transforms.Compose([
@@ -509,15 +484,7 @@ def collate_fn(args, tokenizer, placeholder_token):
             caption = caption.replace(placeholder_token, ' '.join(tokens))
             captions.append(caption)
 
-        inputs = tokenizer(
-            captions,
-            replace_token=False,
-            max_length=tokenizer.model_max_length,
-            padding="max_length",
-            truncation=True,
-            return_tensors="pt"
-        )  # this converts the <part> to <part>_i (if hasn't converted)
-        input_ids = inputs.input_ids
+        input_ids = tokenize_prompt(tokenizer, captions)
         # input_ids = inputs.input_ids.repeat(len(examples), 1)  # (1, 77) -> (B, 77)
 
         codes = torch.stack([example["codes"] for example in examples])
@@ -530,31 +497,6 @@ def collate_fn(args, tokenizer, placeholder_token):
 
     return f
 
-
-def compute_snr(noise_scheduler, timesteps):
-    """
-    Computes SNR as per
-    https://github.com/TiankaiHang/Min-SNR-Diffusion-Training/blob/521b624bd70c67cee4bdf49225915f5945a872e3/guided_diffusion/gaussian_diffusion.py#L847-L849
-    """
-    alphas_cumprod = noise_scheduler.alphas_cumprod
-    sqrt_alphas_cumprod = alphas_cumprod ** 0.5
-    sqrt_one_minus_alphas_cumprod = (1.0 - alphas_cumprod) ** 0.5
-
-    # Expand the tensors.
-    # Adapted from https://github.com/TiankaiHang/Min-SNR-Diffusion-Training/blob/521b624bd70c67cee4bdf49225915f5945a872e3/guided_diffusion/gaussian_diffusion.py#L1026
-    sqrt_alphas_cumprod = sqrt_alphas_cumprod.to(device=timesteps.device)[timesteps].float()
-    while len(sqrt_alphas_cumprod.shape) < len(timesteps.shape):
-        sqrt_alphas_cumprod = sqrt_alphas_cumprod[..., None]
-    alpha = sqrt_alphas_cumprod.expand(timesteps.shape)
-
-    sqrt_one_minus_alphas_cumprod = sqrt_one_minus_alphas_cumprod.to(device=timesteps.device)[timesteps].float()
-    while len(sqrt_one_minus_alphas_cumprod.shape) < len(timesteps.shape):
-        sqrt_one_minus_alphas_cumprod = sqrt_one_minus_alphas_cumprod[..., None]
-    sigma = sqrt_one_minus_alphas_cumprod.expand(timesteps.shape)
-
-    # Compute SNR.
-    snr = (alpha / sigma) ** 2
-    return snr
 
 
 def setup_attn_processor(unet, **kwargs):

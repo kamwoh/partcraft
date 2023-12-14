@@ -64,6 +64,8 @@ from dreamcreature.tokenizer import MultiTokenCLIPTokenizer
 from dreamcreature.text_encoder import CustomCLIPTextModel, CustomCLIPTextModelWithProjection
 from dreamcreature.mapper import TokenMapper
 from dreamcreature.dataset import DreamCreatureDataset
+from dreamcreature.loss import dreamcreature_loss
+from utils import add_tokens, tokenize_prompt
 
 IMAGENET_TEMPLATES = [
     "a photo of a {}",
@@ -546,46 +548,6 @@ def unet_attn_processors_state_dict(unet) -> Dict[str, torch.tensor]:
     return attn_processors_state_dict
 
 
-def tokenize_prompt(tokenizer, prompt):
-    text_inputs = tokenizer(
-        prompt,
-        replace_token=False,
-        padding="max_length",
-        max_length=tokenizer.model_max_length,
-        truncation=True,
-        return_tensors="pt",
-    )
-    text_input_ids = text_inputs.input_ids
-    return text_input_ids
-
-
-# # Adapted from pipelines.StableDiffusionXLPipeline.encode_prompt
-# def encode_prompt(text_encoders, tokenizers, prompt, text_input_ids_list=None):
-#     prompt_embeds_list = []
-#
-#     for i, text_encoder in enumerate(text_encoders):
-#         if tokenizers is not None:
-#             tokenizer = tokenizers[i]
-#             text_input_ids = tokenize_prompt(tokenizer, prompt)
-#         else:
-#             assert text_input_ids_list is not None
-#             text_input_ids = text_input_ids_list[i]
-#
-#         prompt_embeds = text_encoder(
-#             text_input_ids.to(text_encoder.device),
-#             output_hidden_states=True,
-#         )
-#
-#         # We are only ALWAYS interested in the pooled output of the final text encoder
-#         pooled_prompt_embeds = prompt_embeds[0]
-#         prompt_embeds = prompt_embeds.hidden_states[-2]
-#         bs_embed, seq_len, _ = prompt_embeds.shape
-#         prompt_embeds = prompt_embeds.view(bs_embed, seq_len, -1)
-#         prompt_embeds_list.append(prompt_embeds)
-#
-#     prompt_embeds = torch.concat(prompt_embeds_list, dim=-1)
-#     pooled_prompt_embeds = pooled_prompt_embeds.view(bs_embed, -1)
-#     return prompt_embeds, pooled_prompt_embeds
 
 
 def encode_prompt(text_encoders, text_input_ids_list, placeholder_token_ids, mapper_outputs):
@@ -618,23 +580,6 @@ def encode_prompt(text_encoders, text_input_ids_list, placeholder_token_ids, map
     pooled_prompt_embeds = pooled_prompt_embeds.view(bs_embed, -1)
     return prompt_embeds, pooled_prompt_embeds
 
-
-def add_tokens(tokenizer, text_encoder, placeholder_token, num_vec_per_token=1, initializer_token=None):
-    """
-    Add tokens to the tokenizer and set the initial value of token embeddings
-    """
-    tokenizer.add_placeholder_tokens(placeholder_token, num_vec_per_token=num_vec_per_token)
-    text_encoder.resize_token_embeddings(len(tokenizer))
-    token_embeds = text_encoder.get_input_embeddings().weight.data
-    placeholder_token_ids = tokenizer.encode(placeholder_token, add_special_tokens=False)
-    if initializer_token:
-        token_ids = tokenizer.encode(initializer_token, add_special_tokens=False)
-        for i, placeholder_token_id in enumerate(placeholder_token_ids):
-            token_embeds[placeholder_token_id] = token_embeds[token_ids[i * len(token_ids) // num_vec_per_token]]
-    else:
-        for i, placeholder_token_id in enumerate(placeholder_token_ids):
-            token_embeds[placeholder_token_id] = torch.randn_like(token_embeds[placeholder_token_id])
-    return placeholder_token_ids
 
 
 def collate_fn(args, tokenizer_one, tokenizer_two, placeholder_token):
@@ -738,69 +683,6 @@ def collate_fn(args, tokenizer_one, tokenizer_two, placeholder_token):
         return collate_output
 
     return f
-
-
-def dreamcreature_loss(batch,
-                       unet: UNet2DConditionModel,
-                       dino: DINO,
-                       seg: KMeansSegmentation,
-                       placeholder_token_ids,
-                       accelerator):
-    attn_probs = {}
-
-    for name, module in unet.named_modules():
-        if isinstance(module, Attention) and module.attn_probs is not None:
-            a = module.attn_probs.mean(dim=1)  # (B,Head,H,W,77) -> (B,H,W,77)
-            attn_probs[name] = a
-
-    avg_attn_map = []
-    for name in attn_probs:
-        avg_attn_map.append(attn_probs[name])
-
-    avg_attn_map = torch.stack(avg_attn_map, dim=0).mean(dim=0)  # (L,B,H,W,77) -> (B,H,W,77)
-    B, H, W, seq_length = avg_attn_map.size()
-    located_attn_map = []
-
-    # locate the attn map
-    for i, placeholder_token_id in enumerate(placeholder_token_ids):
-        for bi in range(B):
-            learnable_idx = (batch["input_ids_one"][bi] == placeholder_token_id).nonzero(as_tuple=True)[0]
-
-            if len(learnable_idx) != 0:  # only assign if found
-                if len(learnable_idx) == 1:
-                    offset_learnable_idx = learnable_idx
-                else:  # if there is two and above.
-                    raise NotImplementedError
-
-                located_map = avg_attn_map[bi, :, :, offset_learnable_idx]
-                located_attn_map.append(located_map)
-            else:
-                located_attn_map.append(torch.zeros(H, W, 1).to(accelerator.device))
-
-    M = len(placeholder_token_ids)
-    located_attn_map = torch.stack(located_attn_map, dim=0).reshape(M, B, H, W).transpose(0, 1)  # (B, M, 16, 16)
-
-    raw_images = batch['raw_images']
-    dino_input = dino.preprocess(raw_images, size=224)
-    with torch.no_grad():
-        dino_ft = dino.get_feat_maps(dino_input)
-        segmasks = seg.get_segmask(dino_ft).to(located_attn_map.dtype)  # (B, M, H, W)
-        if H != 16:  # for res 1024
-            segmasks = F.interpolate(segmasks, (H, W), mode='nearest')
-
-        masks = []
-        for i, appeared in enumerate(batch['appeared_tokens']):
-            mask = (segmasks[i, appeared].sum(dim=0) > 0).float()  # (A, H, W) -> (H, W)
-            masks.append(mask)
-        masks = torch.stack(masks, dim=0)  # (B, H, W)
-        batch['masks'] = masks
-
-    norm_map = located_attn_map / located_attn_map.sum(dim=1, keepdim=True).clamp(min=1e-6)
-    # if norm_map is assigned manually, means the sub-concept token is not found, hence no gradient will be backprop
-    attn_loss = F.binary_cross_entropy(norm_map.clamp(min=0, max=1),
-                                       segmasks.clamp(min=0, max=1))
-    return attn_loss, located_attn_map.detach().max()
-
 
 def get_processor(self, return_deprecated_lora: bool = False):
     r"""
