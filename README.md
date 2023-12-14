@@ -47,3 +47,7 @@ Creative generation:
 
 ![creative](docs/assets/creativegeneration.png)
 
+### Todo
+
+- train kmeans segmentation
+- upload pretrained weights to huggingface
