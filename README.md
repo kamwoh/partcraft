@@ -51,3 +51,5 @@ Creative generation:
 
 - train kmeans segmentation
 - upload pretrained weights to huggingface
+- requirements.txt
+- update readme
