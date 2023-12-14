@@ -31,7 +31,10 @@ def dreamcreature_loss(batch,
     # locate the attn map
     for i, placeholder_token_id in enumerate(placeholder_token_ids):
         for bi in range(B):
-            learnable_idx = (batch["input_ids_one"][bi] == placeholder_token_id).nonzero(as_tuple=True)[0]
+            if "input_ids" in batch:
+                learnable_idx = (batch["input_ids"][bi] == placeholder_token_id).nonzero(as_tuple=True)[0]
+            else:
+                learnable_idx = (batch["input_ids_one"][bi] == placeholder_token_id).nonzero(as_tuple=True)[0]
 
             if len(learnable_idx) != 0:  # only assign if found
                 if len(learnable_idx) == 1:
