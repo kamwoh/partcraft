@@ -1065,9 +1065,6 @@ def main():
                                        args.num_parts,
                                        initializer_token)
     pipeline.placeholder_token_ids = placeholder_token_ids
-    pipeline.nbits = args.nbits
-    pipeline.num_parts = args.num_parts
-    pipeline.int_inputs = args.int_inputs
     pipeline.simple_mapper = TokenMapper(args.num_parts,
                                          args.num_k_per_part,
                                          OUT_DIMS,
