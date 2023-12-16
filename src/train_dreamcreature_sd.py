@@ -459,7 +459,7 @@ def collate_fn(args, tokenizer, placeholder_token):
                     caption = random.choice(imagenet_templates).format(placeholder_token)
             else:
                 if args.class_name != '':
-                    caption = f'a {placeholder_token} {args.class_name}'
+                    caption = f'{placeholder_token} {args.class_name}'
                 else:
                     caption = placeholder_token
 

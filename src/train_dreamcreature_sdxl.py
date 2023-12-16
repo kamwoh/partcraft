@@ -512,6 +512,7 @@ def parse_args(input_args=None):
     parser.add_argument('--use_gt_label', action='store_true')
     parser.add_argument('--bg_code', default=7, type=int)  # for gt_label
     parser.add_argument('--fg_idx', default=0, type=int)
+    parser.add_argument('--use_templates', action='store_true')
 
     parser.add_argument('--filter_class', default=None, type=int, help='debugging purpose')
 
@@ -622,10 +623,16 @@ def collate_fn(args, tokenizer_one, tokenizer_two, placeholder_token):
             all_images.append(image)
 
             ##### dreamcreature caption #####
-            if args.class_name != '':
-                caption = random.choice(IMAGENET_TEMPLATES).format(f'{placeholder_token} {args.class_name}')
+            if args.use_templates and random.random() <= 0.5:  # 50% using templates
+                if args.class_name != '':
+                    caption = random.choice(IMAGENET_TEMPLATES).format(f'{placeholder_token} {args.class_name}')
+                else:
+                    caption = random.choice(IMAGENET_TEMPLATES).format(placeholder_token)
             else:
-                caption = random.choice(IMAGENET_TEMPLATES).format(placeholder_token)
+                if args.class_name != '':
+                    caption = f'{placeholder_token} {args.class_name}'
+                else:
+                    caption = placeholder_token
 
             tokens = tokenizer_one.token_map[placeholder_token][:args.num_parts]
             tokens = [tokens[a] for a in examples[i]['appeared']]
