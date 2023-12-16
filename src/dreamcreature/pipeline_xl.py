@@ -1,5 +1,3 @@
-from diffusers.models.attention_processor import Attention
-
 from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion import *
 from diffusers.pipelines.stable_diffusion_xl.pipeline_stable_diffusion_xl import (
     StableDiffusionXLPipeline,
@@ -9,8 +7,10 @@ from diffusers.pipelines.stable_diffusion_xl.pipeline_stable_diffusion_xl import
     StableDiffusionXLLoraLoaderMixin,
     PipelineImageInput
 )
-from pipeline import convert_prompt
+
+from dreamcreature.pipeline import convert_prompt
 from dreamcreature.tokenizer import MultiTokenCLIPTokenizer
+
 
 class DreamCreatureSDXLPipeline(StableDiffusionXLPipeline):
     def _maybe_convert_prompt(self, prompt: str, tokenizer: MultiTokenCLIPTokenizer):
