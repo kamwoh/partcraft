@@ -1,3 +1,5 @@
+import os
+
 from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion import *
 from diffusers.pipelines.stable_diffusion_xl.pipeline_stable_diffusion_xl import (
     StableDiffusionXLPipeline,
@@ -799,6 +801,11 @@ def create_args_xl(output_dir, num_parts=8, num_k_per_part=256):
         'projection_nlayers': 1,
         'output_dir': output_dir
     })
+    folders = sorted(os.listdir(args.output_dir))
+    cps = [int(f.split('-')[1]) for f in folders if 'checkpoint' in f and '.ipynb' not in f]
+    maxcp = max(cps)
+
+    args.maxcp = maxcp
     return args
 
 

@@ -1,4 +1,6 @@
-import torch
+from diffusers.loaders import AttnProcsLayers
+import os
+
 from diffusers.loaders import AttnProcsLayers
 from diffusers.models.attention_processor import Attention
 from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion import *
@@ -628,6 +630,11 @@ def create_args(output_dir, num_parts=8, num_k_per_part=256):
         'projection_nlayers': 1,
         'output_dir': output_dir
     })
+    folders = sorted(os.listdir(args.output_dir))
+    cps = [int(f.split('-')[1]) for f in folders if 'checkpoint' in f and '.ipynb' not in f]
+    maxcp = max(cps)
+
+    args.maxcp = maxcp
     return args
 
 
