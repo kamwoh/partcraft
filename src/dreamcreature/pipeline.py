@@ -1,7 +1,41 @@
+import torch
+from diffusers.loaders import AttnProcsLayers
 from diffusers.models.attention_processor import Attention
 from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion import *
+from omegaconf import OmegaConf
 
+from dreamcreature.attn_processor import LoRAAttnProcessorCustom
+from dreamcreature.mapper import TokenMapper
+from dreamcreature.text_encoder import CustomCLIPTextModel
 from dreamcreature.tokenizer import MultiTokenCLIPTokenizer
+from utils import add_tokens, get_attn_processors
+
+
+def setup_attn_processor(unet, **kwargs):
+    lora_attn_procs = {}
+    for name in unet.attn_processors.keys():
+        cross_attention_dim = None if name.endswith("attn1.processor") else unet.config.cross_attention_dim
+        if name.startswith("mid_block"):
+            hidden_size = unet.config.block_out_channels[-1]
+        elif name.startswith("up_blocks"):
+            block_id = int(name[len("up_blocks.")])
+            hidden_size = list(reversed(unet.config.block_out_channels))[block_id]
+        elif name.startswith("down_blocks"):
+            block_id = int(name[len("down_blocks.")])
+            hidden_size = unet.config.block_out_channels[block_id]
+
+        lora_attn_procs[name] = LoRAAttnProcessorCustom(
+            hidden_size=hidden_size,
+            cross_attention_dim=cross_attention_dim,
+            rank=kwargs['rank'],
+        )
+
+    unet.set_attn_processor(lora_attn_procs)
+
+
+def load_attn_processor(unet, filename):
+    lora_layers = AttnProcsLayers(get_attn_processors(unet))
+    lora_layers.load_state_dict(torch.load(filename))
 
 
 def convert_prompt(prompt: str, replace_token: bool = False):
@@ -581,3 +615,56 @@ class DreamCreatureSDPipeline(StableDiffusionPipeline):
             return (image, has_nsfw_concept)
 
         return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
+
+
+def create_args(output_dir, num_parts=8, num_k_per_part=256):
+    args = OmegaConf.create({
+        'pretrained_model_name_or_path': 'runwayml/stable-diffusion-v1-5',
+        'num_parts': 8,
+        'num_k_per_part': 256,
+        'revision': None,
+        'variant': None,
+        'rank': 4,
+        'projection_nlayers': 1,
+        'output_dir': output_dir
+    })
+    return args
+
+
+def load_pipeline(args, weight_dtype=torch.float16, device=torch.device('cuda')):
+    tokenizer = MultiTokenCLIPTokenizer.from_pretrained(
+        args.pretrained_model_name_or_path, subfolder="tokenizer", revision=args.revision
+    )
+    text_encoder = CustomCLIPTextModel.from_pretrained(
+        args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision
+    )
+    pipeline = DreamCreatureSDPipeline.from_pretrained(
+        args.pretrained_model_name_or_path,
+        text_encoder=text_encoder,
+        tokenizer=tokenizer,
+        revision=args.revision,
+        torch_dtype=weight_dtype,
+    )
+    placeholder_token = "<part>"
+    initializer_token = None
+    placeholder_token_ids = add_tokens(tokenizer,
+                                       text_encoder,
+                                       placeholder_token,
+                                       args.num_parts,
+                                       initializer_token)
+    pipeline.placeholder_token_ids = placeholder_token_ids
+    pipeline.simple_mapper = TokenMapper(args.num_parts,
+                                         args.num_k_per_part,
+                                         768,
+                                         args.projection_nlayers)
+    pipeline.simple_mapper.load_state_dict(torch.load(args.output_dir + f'/checkpoint-{args.maxcp}/pytorch_model_1.bin',
+                                                      map_location='cpu'))
+    pipeline.simple_mapper.to(device)
+
+    pipeline = pipeline.to(device)
+
+    # load attention processors
+    # pipeline.unet.load_attn_procs(args.output_dir, use_safetensors=not args.custom_diffusion)
+    setup_attn_processor(pipeline.unet, rank=args.rank)
+    load_attn_processor(pipeline.unet, args.output_dir + f'/checkpoint-{args.maxcp}/pytorch_model.bin')
+    return pipeline

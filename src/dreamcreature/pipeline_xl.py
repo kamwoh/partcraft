@@ -7,9 +7,43 @@ from diffusers.pipelines.stable_diffusion_xl.pipeline_stable_diffusion_xl import
     StableDiffusionXLLoraLoaderMixin,
     PipelineImageInput
 )
+from omegaconf import OmegaConf
 
+from dreamcreature.mapper import TokenMapper
 from dreamcreature.pipeline import convert_prompt
+from dreamcreature.text_encoder import CustomCLIPTextModel, CustomCLIPTextModelWithProjection
 from dreamcreature.tokenizer import MultiTokenCLIPTokenizer
+from utils import add_tokens
+
+
+def init_for_pipeline(args):
+    tokenizer_one = MultiTokenCLIPTokenizer.from_pretrained(
+        args.pretrained_model_name_or_path,
+        subfolder="tokenizer",
+        revision=args.revision,
+        use_fast=False,
+    )
+    tokenizer_two = MultiTokenCLIPTokenizer.from_pretrained(
+        args.pretrained_model_name_or_path,
+        subfolder="tokenizer_2",
+        revision=args.revision,
+        use_fast=False,
+    )
+    text_encoder_cls_one = CustomCLIPTextModel
+    text_encoder_cls_two = CustomCLIPTextModelWithProjection
+    text_encoder_one = text_encoder_cls_one.from_pretrained(
+        args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision, variant=args.variant
+    )
+    text_encoder_two = text_encoder_cls_two.from_pretrained(
+        args.pretrained_model_name_or_path, subfolder="text_encoder_2", revision=args.revision, variant=args.variant
+    )
+
+    OUT_DIMS = 768 + 1280  # 2048
+    simple_mapper = TokenMapper(args.num_parts,
+                                args.num_k_per_part,
+                                OUT_DIMS,
+                                args.projection_nlayers)
+    return text_encoder_one, text_encoder_two, tokenizer_one, tokenizer_two, simple_mapper
 
 
 class DreamCreatureSDXLPipeline(StableDiffusionXLPipeline):
@@ -752,3 +786,59 @@ class DreamCreatureSDXLPipeline(StableDiffusionXLPipeline):
             return (image,)
 
         return StableDiffusionXLPipelineOutput(images=image)
+
+
+def create_args_xl(output_dir, num_parts=8, num_k_per_part=256):
+    args = OmegaConf.create({
+        'pretrained_model_name_or_path': 'stabilityai/stable-diffusion-xl-base-1.0',
+        'num_parts': num_parts,
+        'num_k_per_part': num_k_per_part,
+        'revision': None,
+        'variant': None,
+        'rank': 4,
+        'projection_nlayers': 1,
+        'output_dir': output_dir
+    })
+    return args
+
+
+def load_pipeline_xl(args, weight_dtype=torch.float16, device=torch.device('cuda')):
+    text_encoder_one, text_encoder_two, tokenizer_one, tokenizer_two, simple_mapper = init_for_pipeline(args)
+    placeholder_token = "<part>"
+    initializer_token = None
+    placeholder_token_ids_one = add_tokens(tokenizer_one,
+                                           text_encoder_one,
+                                           placeholder_token,
+                                           args.num_parts,
+                                           initializer_token)
+    placeholder_token_ids_two = add_tokens(tokenizer_two,
+                                           text_encoder_two,
+                                           placeholder_token,
+                                           args.num_parts,
+                                           initializer_token)
+
+    vae = AutoencoderKL.from_pretrained("madebyollin/sdxl-vae-fp16-fix", torch_dtype=torch.float16)
+    pipeline = DreamCreatureSDXLPipeline.from_pretrained(
+        args.pretrained_model_name_or_path,
+        vae=vae,
+        tokenizer=tokenizer_one,
+        tokenizer_2=tokenizer_two,
+        text_encoder=text_encoder_one,
+        text_encoder_2=text_encoder_two,
+        revision=args.revision,
+        variant=args.variant,
+        torch_dtype=weight_dtype,
+    )
+    pipeline.placeholder_token_ids = placeholder_token_ids_one
+    pipeline.replace_token = False
+    pipeline.simple_mapper = simple_mapper
+    pipeline.simple_mapper.load_state_dict(torch.load(args.output_dir + f'/checkpoint-{args.maxcp}/hash_mapper.pth',
+                                                      map_location='cpu'))
+
+    pipeline.simple_mapper.to(device)
+    pipeline = pipeline.to(device)
+
+    # load attention processors
+    pipeline.load_lora_weights(args.output_dir + f'/checkpoint-{args.maxcp}')
+    pipeline = pipeline.to(weight_dtype)
+    return pipeline
