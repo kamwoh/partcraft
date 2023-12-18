@@ -9,4 +9,4 @@ python train_dreamcreature_sd.py \
      --code_filename="train_caps_better_m8_k256.txt" --projection_nlayers=1 \
      --use_templates --vector_shuffle --snr_gamma=5 \
      --attn_loss=0.01 --use_gt_label --bg_code=7 \
-     --resume_from_checkpoint="latest"
+     --resume_from_checkpoint="latest" --mixed_precision="fp16"
