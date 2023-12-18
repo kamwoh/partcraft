@@ -12,6 +12,7 @@ from diffusers.pipelines.stable_diffusion_xl.pipeline_stable_diffusion_xl import
 )
 from omegaconf import OmegaConf
 
+from dreamcreature.attn_processor import AttnProcessorCustom
 from dreamcreature.mapper import TokenMapper
 from dreamcreature.pipeline import convert_prompt
 from dreamcreature.text_encoder import CustomCLIPTextModel, CustomCLIPTextModelWithProjection
@@ -881,5 +882,14 @@ def load_pipeline_xl(args, weight_dtype=torch.float16, device=torch.device('cuda
 
     # load attention processors
     pipeline.load_lora_weights(args.output_dir + f'/checkpoint-{args.maxcp}')
+
+    def setup_attn_processors(unet, attn_size):
+        attn_procs = {}
+        for name in unet.attn_processors.keys():
+            attn_procs[name] = AttnProcessorCustom(attn_size)
+        unet.set_attn_processor(attn_procs)
+
     pipeline = pipeline.to(weight_dtype)
+    setup_attn_processors(pipeline.unet, 16)
+
     return pipeline
