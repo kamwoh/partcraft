@@ -99,11 +99,7 @@ def convert_prompt(prompt: str, replace_token: bool = False, v1=True):
                 split_tokens.append(b)
                 continue
 
-            try:
-                intb = int(b)
-            except:  # not able to cast at all, just treat as normal token
-                split_tokens.append(b)
-                continue
+            intb = int(b)
 
             parts += f'<part>_{i} '
             split_tokens.append(f'<part>_{i}')
@@ -714,7 +710,7 @@ def load_pipeline(args, weight_dtype=torch.float16, device=torch.device('cuda'))
     pipeline.simple_mapper.load_state_dict(torch.load(args.output_dir + f'/checkpoint-{args.maxcp}/pytorch_model_1.bin',
                                                       map_location='cpu'))
     pipeline.simple_mapper.to(device)
-
+    pipeline.replace_token = False
     pipeline = pipeline.to(device)
 
     # load attention processors
