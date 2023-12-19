@@ -39,7 +39,7 @@ def load_attn_processor(unet, filename):
     lora_layers.load_state_dict(torch.load(filename))
 
 
-def convert_prompt(prompt: str, replace_token: bool = False):
+def convert_prompt(prompt: str, replace_token: bool = False, v1=True):
     r"""
     Parameters:
         prompt (`str`):
@@ -52,7 +52,8 @@ def convert_prompt(prompt: str, replace_token: bool = False):
         return prompt, None, None
 
     splits = prompt.replace('.', '').strip().split(' ')
-    # 0:1 1:24...
+    # v1: a photo of a 0:1 1:24 ...
+    # v2: a photo of a <0:1> <1:24> ...
     ints = []
     noncode_start = ''
     noncode_end = ''
@@ -64,15 +65,51 @@ def convert_prompt(prompt: str, replace_token: bool = False):
             split_tokens.append(b)
             continue
 
-        i, b = b.strip().split(':')
-        has_comma = ',' in b
-        if has_comma:
-            b = b[:-1]
-        intb = int(b)
-        parts += f'<part>_{i} '
-        split_tokens.append(f'<part>_{i}')
-        if has_comma:
-            split_tokens.append(',')
+        if v1:
+            i, b = b.strip().split(':')
+            has_comma = ',' in b
+            if has_comma:
+                b = b[:-1]
+            intb = int(b)
+            parts += f'<part>_{i} '
+            split_tokens.append(f'<part>_{i}')
+            if has_comma:
+                split_tokens.append(',')
+        else:
+            if b[0] == '<':
+                if '>' not in b:  # no closing >, ignore
+                    split_tokens.append(b)
+                    continue
+
+                i, b = b[1:].strip().split(':')
+                token_to_add = ''
+                if b[-1] in [',', '.']:
+                    token_to_add = b[-1]
+                    b = b[:-1]
+
+                if b[-1] == '>':
+                    b = b[:-1]
+                else:  # not >, just search for the first >
+                    for ci, char in enumerate(b):
+                        if char == '>':
+                            token_to_add = b[ci + 1:] + token_to_add
+                            b = b[:ci]  # skip >
+                            break
+            else:  # has : but not start with <
+                split_tokens.append(b)
+                continue
+
+            try:
+                intb = int(b)
+            except:  # not able to cast at all, just treat as normal token
+                split_tokens.append(b)
+                continue
+
+            parts += f'<part>_{i} '
+            split_tokens.append(f'<part>_{i}')
+            if len(token_to_add) != 0:
+                split_tokens.append(token_to_add)
+
         parts_i.append(int(i))
         ints.append(intb)
 

@@ -1,5 +1,6 @@
 import os
 
+from diffusers.models.attention_processor import Attention
 from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion import *
 from diffusers.pipelines.stable_diffusion_xl.pipeline_stable_diffusion_xl import (
     StableDiffusionXLPipeline,
@@ -11,6 +12,7 @@ from diffusers.pipelines.stable_diffusion_xl.pipeline_stable_diffusion_xl import
 )
 from omegaconf import OmegaConf
 
+from dreamcreature.attn_processor import AttnProcessorCustom
 from dreamcreature.mapper import TokenMapper
 from dreamcreature.pipeline import convert_prompt
 from dreamcreature.text_encoder import CustomCLIPTextModel, CustomCLIPTextModelWithProjection
@@ -389,6 +391,7 @@ class DreamCreatureSDXLPipeline(StableDiffusionXLPipeline):
             clip_skip: Optional[int] = None,
             callback_on_step_end: Optional[Callable[[int, int, Dict], None]] = None,
             callback_on_step_end_tensor_inputs: List[str] = ["latents"],
+            get_attention_map: bool = False,
             **kwargs,
     ):
         r"""
@@ -699,6 +702,9 @@ class DreamCreatureSDXLPipeline(StableDiffusionXLPipeline):
 
         self._num_timesteps = len(timesteps)
         with self.progress_bar(total=num_inference_steps) as progress_bar:
+            if get_attention_map:
+                attn_maps = {}  # each t one attn map
+
             for i, t in enumerate(timesteps):
                 # expand the latents if we are doing classifier free guidance
                 latent_model_input = torch.cat([latents] * 2) if self.do_classifier_free_guidance else latents
@@ -718,6 +724,16 @@ class DreamCreatureSDXLPipeline(StableDiffusionXLPipeline):
                     added_cond_kwargs=added_cond_kwargs,
                     return_dict=False,
                 )[0]
+                if get_attention_map:
+                    attn_probs = {}
+
+                    for name, module in self.unet.named_modules():
+                        if isinstance(module, Attention) and module.attn_probs is not None:
+                            # take 1 because we are taking the noise_pred_text
+                            a = module.attn_probs[1].mean(dim=0)  # (2,Head,H,W,77)->(H,W,77)
+                            attn_probs[name] = a
+
+                    attn_maps[i] = attn_probs
 
                 # perform guidance
                 if self.do_classifier_free_guidance:
@@ -757,6 +773,25 @@ class DreamCreatureSDXLPipeline(StableDiffusionXLPipeline):
                 if XLA_AVAILABLE:
                     import torch_xla.core.xla_model as xm
                     xm.mark_step()
+
+        if get_attention_map:
+            output_maps = {}
+            for name in attn_probs.keys():
+                timeavg_maps = []
+                for i in attn_maps.keys():
+                    timeavg_maps.append(attn_maps[i][name])
+                timeavg_maps = torch.stack(timeavg_maps, dim=0).mean(dim=0)
+                output_maps[name] = timeavg_maps
+
+            avg_attn_map = []
+            for name in attn_probs:
+                avg_attn_map.append(attn_probs[name])
+            avg_attn_map = torch.stack(avg_attn_map, dim=0).mean(dim=0)  # (5,B,H,W,77) -> (B,H,W,77)
+            output_maps['avg'] = avg_attn_map
+
+            del attn_maps
+            del attn_probs
+            self.attn_maps = output_maps
 
         if not output_type == "latent":
             # make sure the VAE is in float32 mode, as it overflows in float16
@@ -847,5 +882,14 @@ def load_pipeline_xl(args, weight_dtype=torch.float16, device=torch.device('cuda
 
     # load attention processors
     pipeline.load_lora_weights(args.output_dir + f'/checkpoint-{args.maxcp}')
+
+    def setup_attn_processors(unet, attn_size):
+        attn_procs = {}
+        for name in unet.attn_processors.keys():
+            attn_procs[name] = AttnProcessorCustom(attn_size)
+        unet.set_attn_processor(attn_procs)
+
     pipeline = pipeline.to(weight_dtype)
+    setup_attn_processors(pipeline.unet, 16)
+
     return pipeline
