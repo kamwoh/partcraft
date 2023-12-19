@@ -80,7 +80,7 @@ with gr.Blocks(title="DreamCreature") as demo:
                 seed = gr.Number(label="Seed", value=42)
                 button = gr.Button()
 
-            output_images = gr.Image('Output')
+            output_images = gr.Image(label='Output')
 
     button.click(fn=generate_images,
                  inputs=[prompt, negative_prompt, num_inference_steps, guidance_scale,
