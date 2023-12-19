@@ -4,7 +4,6 @@ import gc
 import gradio as gr
 import torch
 from PIL import Image
-from gradio_imageslider import ImageSlider
 
 from dreamcreature.pipeline import create_args, load_pipeline
 
@@ -81,7 +80,7 @@ with gr.Blocks(title="DreamCreature") as demo:
                 seed = gr.Number(label="Seed", value=42)
                 button = gr.Button()
 
-            output_images = ImageSlider(show_label=False)
+            output_images = gr.Image('Output')
 
     button.click(fn=generate_images,
                  inputs=[prompt, negative_prompt, num_inference_steps, guidance_scale,
