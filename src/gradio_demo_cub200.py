@@ -50,6 +50,8 @@ def generate_images(prompt, negative_prompt, num_inference_steps, guidance_scale
         args.unet_path = "mhdang/dpo-sd1.5-text2image-v1"
 
     pipe = load_pipeline(args, torch.float16, 'cuda')
+    pipe = pipe.to(torch.float16)
+
     generator = torch.Generator(device='cuda')
     generator = generator.manual_seed(int(seed))
 
