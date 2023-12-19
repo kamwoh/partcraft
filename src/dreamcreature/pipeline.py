@@ -147,7 +147,12 @@ class DreamCreatureSDPipeline(StableDiffusionPipeline):
         else:
             replace_token = True
 
-        new_caption, code, parts_i = convert_prompt(prompt, replace_token)
+        if hasattr(self, 'v1'):
+            v1 = self.v1
+        else:
+            v1 = True
+
+        new_caption, code, parts_i = convert_prompt(prompt, replace_token, v1)
 
         if hasattr(self, 'verbose') and self.verbose:
             print(new_caption)
