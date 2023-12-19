@@ -66,7 +66,7 @@ def generate_images(prompt, negative_prompt, num_inference_steps, guidance_scale
     del pipe
     gc.collect()
     torch.cuda.empty_cache()
-    return image
+    return [image]
 
 
 with gr.Blocks(title="DreamCreature") as demo:
