@@ -671,6 +671,7 @@ def create_args(output_dir, num_parts=8, num_k_per_part=256):
     maxcp = max(cps)
 
     args.maxcp = maxcp
+    args.unet_path = None
     return args
 
 
@@ -681,8 +682,13 @@ def load_pipeline(args, weight_dtype=torch.float16, device=torch.device('cuda'))
     text_encoder = CustomCLIPTextModel.from_pretrained(
         args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision
     )
+    unet_path = args.unet_path if args.unet_path is not None else args.pretrained_model_name_or_path
+    unet: UNet2DConditionModel = UNet2DConditionModel.from_pretrained(
+        unet_path, subfolder="unet", revision=args.revision
+    )
     pipeline = DreamCreatureSDPipeline.from_pretrained(
         args.pretrained_model_name_or_path,
+        unet=unet,
         text_encoder=text_encoder,
         tokenizer=tokenizer,
         revision=args.revision,
