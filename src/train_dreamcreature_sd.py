@@ -417,6 +417,9 @@ def parse_args():
     parser.add_argument('--fg_idx', default=0, type=int)  # for gt_label
 
     parser.add_argument('--filter_class', default=None, type=int, help='debugging purpose')
+
+    parser.add_argument('--unet_path', default=None)
+
     args = parser.parse_args()
     env_local_rank = int(os.environ.get("LOCAL_RANK", -1))
     if env_local_rank != -1 and env_local_rank != args.local_rank:
@@ -583,9 +586,12 @@ def main():
         args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision
     )
     vae = AutoencoderKL.from_pretrained(args.pretrained_model_name_or_path, subfolder="vae", revision=args.revision)
+
+    unet_path = args.unet_path if args.unet_path is not None else args.pretrained_model_name_or_path
     unet: UNet2DConditionModel = UNet2DConditionModel.from_pretrained(
-        args.pretrained_model_name_or_path, subfolder="unet", revision=args.revision
+        unet_path, subfolder="unet", revision=args.revision
     )
+
     dino = DINO()
     seg = KMeansSegmentation(args.train_data_dir + '/pretrained_kmeans.pth',
                              args.fg_idx,
@@ -1050,8 +1056,13 @@ def main():
     text_encoder = CustomCLIPTextModel.from_pretrained(
         args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision
     )
+    unet_path = args.unet_path if args.unet_path is not None else args.pretrained_model_name_or_path
+    unet: UNet2DConditionModel = UNet2DConditionModel.from_pretrained(
+        unet_path, subfolder="unet", revision=args.revision
+    )
     pipeline = DreamCreatureSDPipeline.from_pretrained(
         args.pretrained_model_name_or_path,
+        unet=unet,
         text_encoder=text_encoder,
         tokenizer=tokenizer,
         revision=args.revision,
