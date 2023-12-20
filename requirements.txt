@@ -1,0 +1,11 @@
+torch
+torchvision
+diffusers
+transformers
+torchpq
+omegaconf
+scikit-learn
+faiss
+tqdm
+accelerate
+gradio
