@@ -23,8 +23,8 @@ def download_file(url, local_path):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model_name', default='dreamcreature-sd1.5-cub200')
-parser.add_argument('--checkpoint', default='checkpoint-74900')
+parser.add_argument('--model_name', default='dreamcreature-sd1.5-dog')
+parser.add_argument('--checkpoint', default='checkpoint-150000')
 opt = parser.parse_args()
 
 model_name = opt.model_name
@@ -51,14 +51,16 @@ pipe = pipe.to(torch.float16)
 
 pipe.verbose = True
 pipe.v1 = False
-pipe.num_k_per_part = 200
+pipe.num_k_per_part = 120
 
 MAPPING = {
-    'body': 0,
-    'tail': 1,
-    'head': 2,
-    'wing': 4,
-    'leg': 6
+    'eye': 0,
+    'neck': 2,
+    'ear': 3,
+    'body': 4,
+    'leg': 5,
+    'nose': 6,
+    'forehead': 7
 }
 
 ID2NAME = open('data/dogs/class_names.txt').readlines()
@@ -106,20 +108,20 @@ with gr.Blocks(title="DreamCreature") as demo:
     with gr.Row():
         gr.Markdown(
             """
-            # DreamCreature (CUB-200-2011)
+            # DreamCreature (Stanford Dogs)
             To create your own creature, you can type:
             
-            `"a photo of a <head:id> <wing:id> bird"` where `id` ranges from 0~199 (200 classes corresponding to CUB-200-2011)
+            `"a photo of a <nose:id> <ear:id> dog"` where `id` ranges from 0~119 (120 classes corresponding to Stanford Dogs)
             
-            For instance `"a photo of a <head:16> <wing:17> bird"` using head of `cardinal (16)` and wing of `spotted catbird (17)`
+            For instance `"a photo of a <nose:2> <ear:112> dog"` using head of `maltese dog (2)` and wing of `cardigan (112)`
             
-            Please see `id` in https://github.com/kamwoh/dreamcreature/blob/master/src/data/cub200_2011/class_names.txt
+            Please see `id` in https://github.com/kamwoh/dreamcreature/blob/master/src/data/dogs/class_names.txt
             
             (Experimental) You can also use two parts together such as:
             
-            `"a photo of a <head:17> <head:16> bird"` mixing head of `cardinal (16)` and `spotted catbird (17)`
+            `"a photo of a <nose:1> <nose:112> dog"` mixing head of `maltese dog (2)` and `spotted cardigan (112)`
             
-            The current available parts are: `head`, `body`, `wing`, `tail`, and `leg`
+            The current available parts are: `eye`, `neck`, `ear`, `body`, `leg`, `nose` and `forehead`
             
             """)
     with gr.Column():
