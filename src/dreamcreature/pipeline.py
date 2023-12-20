@@ -99,16 +99,17 @@ def convert_prompt(prompt: str, replace_token: bool = False, v1=True):
                 split_tokens.append(b)
                 continue
 
-            try:
-                intb = int(b)
-            except:  # not able to cast at all, just treat as normal token
-                split_tokens.append(b)
-                continue
+            intb = abs(int(b))  # just force negative one to positive
 
             parts += f'<part>_{i} '
             split_tokens.append(f'<part>_{i}')
             if len(token_to_add) != 0:
                 split_tokens.append(token_to_add)
+
+        try:
+            int(i)
+        except:
+            raise ValueError(f'cannot cast `part` properly, please make sure input is correct')
 
         parts_i.append(int(i))
         ints.append(intb)
@@ -153,6 +154,9 @@ class DreamCreatureSDPipeline(StableDiffusionPipeline):
             v1 = True
 
         new_caption, code, parts_i = convert_prompt(prompt, replace_token, v1)
+        if hasattr(self, 'num_k_per_part'):
+            if code is not None and any(code >= self.num_k_per_part):
+                raise ValueError(f'`id` cannot more than {self.num_k_per_part}')
 
         if hasattr(self, 'verbose') and self.verbose:
             print(new_caption)
@@ -699,6 +703,8 @@ def load_pipeline(args, weight_dtype=torch.float16, device=torch.device('cuda'))
         revision=args.revision,
         torch_dtype=weight_dtype,
     )
+    pipeline.num_k_per_part = args.num_k_per_part
+    pipeline.num_parts = args.num_parts
     placeholder_token = "<part>"
     initializer_token = None
     placeholder_token_ids = add_tokens(tokenizer,
@@ -714,7 +720,7 @@ def load_pipeline(args, weight_dtype=torch.float16, device=torch.device('cuda'))
     pipeline.simple_mapper.load_state_dict(torch.load(args.output_dir + f'/checkpoint-{args.maxcp}/pytorch_model_1.bin',
                                                       map_location='cpu'))
     pipeline.simple_mapper.to(device)
-
+    pipeline.replace_token = False
     pipeline = pipeline.to(device)
 
     # load attention processors
