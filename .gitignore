@@ -2,3 +2,7 @@
 src/data/cub200_2011/train
 src/data/dogs/Images
 __pycache__
+*/.ipynb_checkpoints
+/.ipynb_checkpoints/requirements-checkpoint.txt
+
+*.bin
