@@ -5,6 +5,8 @@
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 [![Paper](http://img.shields.io/badge/Paper-arxiv.2311.15477-B31B1B.svg)](https://arxiv.org/abs/2311.15477)
 [![Page Views Count](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56/blue.svg)](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56 "Get your own page views count badge on badges.toozhao.com")
+[![Hugging Face](https://img.shields.io/badge/DreamCreature-%F0%9F%A4%97%20Hugging%20Face-blue)](https://huggingface.co/spaces/kamwoh/dreamcreature)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kamwoh/dreamcreature/blob/master/dreamcreature_gradio.ipynb)
 
 </div>
 
@@ -26,23 +28,6 @@ fine-grained image benchmarks demonstrate the superiority of DreamCreature over 
 qualitative and quantitative evaluation. Ultimately, the learned sub-concepts facilitate diverse creative applications,
 including innovative consumer product designs and nuanced property modifications.
 
-### Usage
-
-We offer a number of way to interact with MusicGen:
-
-A demo is also available on the facebook/MusicGen Hugging Face Space (huge thanks to all the HF team for their support).
-You can run the extended demo on a
-Colab: [colab notebook](https://colab.research.google.com/drive/1gF6xIsC7ofM0zxoHl9zSPFiFXi-olmI0?usp=sharing)
-You can use the gradio demo locally by running python -m demos.musicgen_app --share.
-You can play with MusicGen by running the jupyter notebook at demos/musicgen_demo.ipynb locally (if you have a GPU).
-Finally, checkout @camenduru Colab page which is regularly updated with contributions from @camenduru and the community.
-
-Code available now!! You can run this
-at [colab](https://colab.research.google.com/drive/1gF6xIsC7ofM0zxoHl9zSPFiFXi-olmI0?usp=sharing) now!!
-
-Please go to "https://xxx.gradio.live" after the public URL appears.
-
-[//]: # (~We are working on releasing the code... 🏗️ 🚧 🔨 Please stay tuned!  &#40;I am cleaning up my messy code base & training a model with SDXL instead of SDv1.5 as mentioned in the paper&#41;)
 
 ### Methodology
 
@@ -79,9 +64,35 @@ Creative generation:
 
 ![creative](docs/assets/creativegeneration.png)
 
-### Todo
+### Usage
 
-- train kmeans segmentation
-- upload pretrained weights to huggingface
-- requirements.txt
-- update readme
+1. A demo is available on
+   the [`kamwoh/dreamcreature` HuggingFace Space](https://huggingface.co/spaces/kamwoh/dreamcreature). (Very very slow
+   due to CPU only)
+2. You can run the demo on a
+   Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kamwoh/dreamcreature/blob/master/dreamcreature_gradio.ipynb).
+3. You can use the gradio demo locally by running `python app.py` or `gradio_demo_cub200.py` or `gradio_demo_dog.py` in
+   the `src` folder.
+
+### Training
+
+1. Check out `train_kmeans_segmentation.ipynb` to obtain a DINO-based KMeans Segmentation that can obtain the "parts"/"
+   sub-concepts". This is to obtain the "attention mask" used during the training.
+2. Assuming no labels, we can also use the kmeans labels as a supervision, otherwise we can use the supervised labels (
+   such as ground-truth class) as we can obtain higher quality of reconstruction.
+3. Check out `run_sd_sup.sh` or `run_sd_unsup.sh` for training. All hyperparameters in these scripts are used in the
+   paper.
+4. SDXL version also available (see `run_sdxl_sup.sh`) but due to resource limitation, we cannot efficiently train a
+   model, hence we do not have a pre-trained model on SDXL.
+
+### Citation
+
+```
+@misc{ng2023dreamcreature,
+      title={DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination},
+      author={Kam Woh Ng and Xiatian Zhu and Yi-Zhe Song and Tao Xiang},
+      year={2023},
+      eprint={2311.15477},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}}
+```
