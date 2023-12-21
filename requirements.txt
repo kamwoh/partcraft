@@ -9,4 +9,3 @@ faiss-cpu
 tqdm
 accelerate
 gradio
-huggingface_hub
