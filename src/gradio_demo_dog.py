@@ -148,7 +148,7 @@ with gr.Blocks(title="DreamCreature") as demo:
                 num_inference_steps = gr.Slider(minimum=10, maximum=100, step=1, value=30, label="Num Inference Steps")
                 guidance_scale = gr.Slider(minimum=2, maximum=20, step=0.1, value=7.5, label="Guidance Scale")
                 num_images = gr.Slider(minimum=1, maximum=4, step=1, value=1, label="Number of Images")
-                seed = gr.Number(label="Seed", value=42)
+                seed = gr.Number(label="Seed", value=777881414)
                 button = gr.Button()
 
             with gr.Column():
