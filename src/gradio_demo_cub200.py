@@ -90,7 +90,7 @@ def process_text(text):
         # Update the offset for the next replacement
         offset += len(replacement) - (end - start)
 
-        part2id.append(f'{MAPPING[key]}: {ID2NAME[clsid - 1]}')
+        part2id.append(f'{key}: {ID2NAME[clsid - 1]}')
 
     return result, part2id
 
