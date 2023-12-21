@@ -172,6 +172,8 @@ def generate_images(model_name, prompt, negative_prompt, num_inference_steps, gu
                       negative_prompt=negative_prompt, generator=generator,
                       num_inference_steps=int(num_inference_steps), guidance_scale=guidance_scale,
                       num_images_per_prompt=num_images).images
+
+        del pipe
     except Exception as e:
         raise gr.Error(f"Probably due to the prompt have invalid input, please follow the instruction. "
                        f"The error message: {e}")
