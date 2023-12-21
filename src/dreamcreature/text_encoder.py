@@ -8,7 +8,9 @@ from transformers.models.clip.modeling_clip import (CLIPTextConfig,
                                                     CLIPTextModel,
                                                     CLIPTextModelWithProjection,
                                                     CLIPTextModelOutput)
-from transformers.models.clip.modeling_clip import CLIPTextTransformer, _expand_mask, _make_causal_mask
+from transformers.models.clip.modeling_clip import (CLIPTextTransformer,
+                                                    _prepare_4d_attention_mask,
+                                                    _create_4d_causal_attention_mask)
 
 
 class CustomCLIPTextModel(CLIPTextModel):
@@ -103,18 +105,28 @@ class CustomCLIPTextTransformer(CLIPTextTransformer):
         if hidden_states is None:
             hidden_states = self.embeddings(input_ids=input_ids, position_ids=position_ids)
 
-        # bsz, seq_len = input_shape
         # CLIP's text model uses causal mask, prepare it here.
         # https://github.com/openai/CLIP/blob/cfcffb90e69f37bf2ff1e988237a0fbe41f33c04/clip/model.py#L324
-        causal_attention_mask = _make_causal_mask(input_shape, hidden_states.dtype, device=hidden_states.device)
-        # causal_attention_mask = self._build_causal_attention_mask(bsz, seq_len, hidden_states.dtype).to(
-        #     hidden_states.device
-        # )
-
+        causal_attention_mask = _create_4d_causal_attention_mask(
+            input_shape, hidden_states.dtype, device=hidden_states.device
+        )
         # expand attention_mask
         if attention_mask is not None:
             # [bsz, seq_len] -> [bsz, 1, tgt_seq_len, src_seq_len]
-            attention_mask = _expand_mask(attention_mask, hidden_states.dtype)
+            attention_mask = _prepare_4d_attention_mask(attention_mask, hidden_states.dtype)
+
+        # # bsz, seq_len = input_shape
+        # # CLIP's text model uses causal mask, prepare it here.
+        # # https://github.com/openai/CLIP/blob/cfcffb90e69f37bf2ff1e988237a0fbe41f33c04/clip/model.py#L324
+        # causal_attention_mask = _make_causal_mask(input_shape, hidden_states.dtype, device=hidden_states.device)
+        # # causal_attention_mask = self._build_causal_attention_mask(bsz, seq_len, hidden_states.dtype).to(
+        # #     hidden_states.device
+        # # )
+        #
+        # # expand attention_mask
+        # if attention_mask is not None:
+        #     # [bsz, seq_len] -> [bsz, 1, tgt_seq_len, src_seq_len]
+        #     attention_mask = _expand_mask(attention_mask, hidden_states.dtype)
 
         encoder_outputs = self.encoder(
             inputs_embeds=hidden_states,

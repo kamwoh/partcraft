@@ -26,7 +26,16 @@ fine-grained image benchmarks demonstrate the superiority of DreamCreature over 
 qualitative and quantitative evaluation. Ultimately, the learned sub-concepts facilitate diverse creative applications,
 including innovative consumer product designs and nuanced property modifications.
 
-### Notes
+### Usage
+
+We offer a number of way to interact with MusicGen:
+
+A demo is also available on the facebook/MusicGen Hugging Face Space (huge thanks to all the HF team for their support).
+You can run the extended demo on a
+Colab: [colab notebook](https://colab.research.google.com/drive/1gF6xIsC7ofM0zxoHl9zSPFiFXi-olmI0?usp=sharing)
+You can use the gradio demo locally by running python -m demos.musicgen_app --share.
+You can play with MusicGen by running the jupyter notebook at demos/musicgen_demo.ipynb locally (if you have a GPU).
+Finally, checkout @camenduru Colab page which is regularly updated with contributions from @camenduru and the community.
 
 Code available now!! You can run this
 at [colab](https://colab.research.google.com/drive/1gF6xIsC7ofM0zxoHl9zSPFiFXi-olmI0?usp=sharing) now!!
