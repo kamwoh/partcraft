@@ -99,10 +99,10 @@ def generate_images(prompt, negative_prompt, num_inference_steps, guidance_scale
     generator = torch.Generator(device='cuda')
     generator = generator.manual_seed(int(seed))
 
-    prompt, part2id = process_text(prompt)
-    negative_prompt, _ = process_text(negative_prompt)
-
     try:
+        prompt, part2id = process_text(prompt)
+        negative_prompt, _ = process_text(negative_prompt)
+
         images = pipe(prompt,
                       negative_prompt=negative_prompt, generator=generator,
                       num_inference_steps=int(num_inference_steps), guidance_scale=guidance_scale,
