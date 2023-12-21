@@ -163,4 +163,4 @@ with gr.Blocks(title="DreamCreature") as demo:
                  inputs=[prompt, negative_prompt, num_inference_steps, guidance_scale, num_images,
                          seed], outputs=[output_images, markdown_labels], show_progress=True)
 
-demo.queue().launch(inline=False, share=False, debug=True, server_name='0.0.0.0')
+demo.queue().launch(inline=False, share=True, debug=True, server_name='0.0.0.0')
