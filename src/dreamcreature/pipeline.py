@@ -37,7 +37,7 @@ def setup_attn_processor(unet, **kwargs):
 
 def load_attn_processor(unet, filename):
     lora_layers = AttnProcsLayers(get_attn_processors(unet))
-    lora_layers.load_state_dict(torch.load(filename))
+    lora_layers.load_state_dict(torch.load(filename, map_location='cpu'))
 
 
 def convert_prompt_re(prompt: str):
