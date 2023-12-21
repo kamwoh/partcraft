@@ -1,7 +1,7 @@
 torch
 torchvision
 diffusers
-transformers
+transformers==4.34.0
 torchpq
 omegaconf
 scikit-learn
