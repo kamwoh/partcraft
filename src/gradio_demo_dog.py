@@ -131,6 +131,10 @@ with gr.Blocks(title="DreamCreature") as demo:
             For instance `"a photo of a <nose:2> <ear:112> dog"` using head of `maltese dog (2)` and wing of `cardigan (112)`
             
             Please see `id` in https://github.com/kamwoh/dreamcreature/blob/master/src/data/dogs/class_names.txt
+
+            Sub-concept transfer: `"a photo of a <ear:112> cat"`
+
+            Inspiring design: `"a photo of a <eye:38> <body:38> teddy bear"`
             
             (Experimental) You can also use two parts together such as:
             
@@ -142,7 +146,7 @@ with gr.Blocks(title="DreamCreature") as demo:
     with gr.Column():
         with gr.Row():
             with gr.Group():
-                prompt = gr.Textbox(label="Prompt", value="a photo of a <eye:37> <eye:37> teddy bear")
+                prompt = gr.Textbox(label="Prompt", value="a photo of a <eye:37> <body:37> teddy bear")
                 negative_prompt = gr.Textbox(label="Negative Prompt",
                                              value="blurry, ugly, duplicate, poorly drawn, deformed, mosaic")
                 num_inference_steps = gr.Slider(minimum=10, maximum=100, step=1, value=30, label="Num Inference Steps")
