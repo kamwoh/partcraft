@@ -62,7 +62,7 @@ def prepare_pipeline(model_name):
     checkpoint_name = {
         'dreamcreature-sd1.5-cub200': 'checkpoint-74900',
         'dreamcreature-sd1.5-dog': 'checkpoint-150000'
-    }
+    }[model_name]
 
     repo_url = f"https://huggingface.co/kamwoh/{model_name}/resolve/main"
     file_url = repo_url + f"/{checkpoint_name}/pytorch_model.bin"
