@@ -61,7 +61,7 @@ MAPPING = {
     'leg': 6
 }
 
-ID2NAME = open('data/dogs/class_names.txt').readlines()
+ID2NAME = open('data/cub200_2011/class_names.txt').readlines()
 ID2NAME = [line.strip() for line in ID2NAME]
 
 
@@ -123,29 +123,35 @@ with gr.Blocks(title="DreamCreature") as demo:
             """
             # DreamCreature (CUB-200-2011)
             To create your own creature, you can type:
-            
-            `"a photo of a <head:id> <wing:id> bird"` where `id` ranges from 0~199 (200 classes corresponding to CUB-200-2011)
-            
-            For instance `"a photo of a <head:16> <wing:17> bird"` using head of `cardinal (16)` and wing of `spotted catbird (17)`
-            
+
+            `"a photo of a <head:id> <wing:id> bird"` where `id` ranges from 1~200 (200 classes corresponding to CUB-200-2011)
+
+            For instance `"a photo of a <head:17> <wing:18> bird"` using head of `cardinal (17)` and wing of `spotted catbird (18)`
+
             Please see `id` in https://github.com/kamwoh/dreamcreature/blob/master/src/data/cub200_2011/class_names.txt
-            
+
+            You can also try any prompt you like such as:
+
+            Sub-concept transfer: `"a photo of a <wing:17> cat"`
+
+            Inspiring design: `"a photo of a <head:101> <wing:191> teddy bear"`
+
             (Experimental) You can also use two parts together such as:
-            
-            `"a photo of a <head:17> <head:16> bird"` mixing head of `cardinal (16)` and `spotted catbird (17)`
-            
+
+            `"a photo of a <head:17> <head:18> bird"` mixing head of `cardinal (17)` and `spotted catbird (18)`
+
             The current available parts are: `head`, `body`, `wing`, `tail`, and `leg`
-            
+
             """)
     with gr.Column():
         with gr.Row():
             with gr.Group():
-                prompt = gr.Textbox(label="Prompt", value="a photo of a <nose:2> <ear:112> dog")
+                prompt = gr.Textbox(label="Prompt", value="a photo of a <head:16> <wing:17> bird")
                 negative_prompt = gr.Textbox(label="Negative Prompt",
                                              value="blurry, ugly, duplicate, poorly drawn, deformed, mosaic")
                 num_inference_steps = gr.Slider(minimum=10, maximum=100, step=1, value=30, label="Num Inference Steps")
-                guidance_scale = gr.Slider(minimum=1, maximum=20, step=0.1, value=7.5, label="Guidance Scale")
-                num_images = gr.Slider(minimum=1, maximum=4, step=1, value=1, label="Number of Images")
+                guidance_scale = gr.Slider(minimum=2, maximum=20, step=0.1, value=7.5, label="Guidance Scale")
+                num_images = gr.Slider(minimum=1, maximum=4, step=1, value=4, label="Number of Images")
                 seed = gr.Number(label="Seed", value=42)
                 button = gr.Button()
 
