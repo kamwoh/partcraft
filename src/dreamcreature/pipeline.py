@@ -189,12 +189,12 @@ class DreamCreatureSDPipeline(StableDiffusionPipeline):
         else:
             replace_token = True
 
-        if hasattr(self, 'v1'):
-            v1 = self.v1
+        if hasattr(self, 'v'):
+            v = self.v
         else:
-            v1 = True
+            v = 'v1'
 
-        new_caption, code, parts_i = convert_prompt(prompt, replace_token, v1)
+        new_caption, code, parts_i = convert_prompt(prompt, replace_token, v)
         if hasattr(self, 'num_k_per_part'):
             if code is not None and any(code >= self.num_k_per_part):
                 raise ValueError(f'`id` cannot more than {self.num_k_per_part}')

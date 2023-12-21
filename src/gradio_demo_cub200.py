@@ -50,7 +50,7 @@ pipe = load_pipeline(args, torch.float16, 'cuda')
 pipe = pipe.to(torch.float16)
 
 pipe.verbose = True
-pipe.v1 = False
+pipe.v = 're'
 pipe.num_k_per_part = 200
 
 MAPPING = {
