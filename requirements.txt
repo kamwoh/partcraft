@@ -5,7 +5,7 @@ transformers
 torchpq
 omegaconf
 scikit-learn
-faiss
+faiss-cpu
 tqdm
 accelerate
 gradio
