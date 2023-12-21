@@ -1,6 +1,6 @@
 torch
 torchvision
-diffusers
+git+https://github.com/huggingface/diffusers
 transformers==4.34.0
 torchpq
 omegaconf
@@ -9,3 +9,4 @@ faiss-cpu
 tqdm
 accelerate
 gradio
+huggingface_hub
