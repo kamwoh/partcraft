@@ -1,4 +1,5 @@
 import os
+import re
 
 from diffusers.loaders import AttnProcsLayers
 from diffusers.models.attention_processor import Attention
@@ -39,7 +40,44 @@ def load_attn_processor(unet, filename):
     lora_layers.load_state_dict(torch.load(filename))
 
 
-def convert_prompt(prompt: str, replace_token: bool = False, v1=True):
+def convert_prompt_re(prompt: str):
+    pattern = r"<(\d+):(\d+)>"
+    result = prompt
+    offset = 0
+
+    ints = []
+    parts_i = []
+
+    for match in re.finditer(pattern, prompt):
+        i = int(match.group(1))
+        b = int(match.group(2))
+
+        replacement = f"<part>_{i}"
+        start, end = match.span()
+
+        # Adjust the start and end positions based on the offset from previous replacements
+        start += offset
+        end += offset
+
+        # Replace the matched text with the replacement
+        result = result[:start] + replacement + result[end:]
+
+        # Update the offset for the next replacement
+        offset += len(replacement) - (end - start)
+
+        parts_i.append(i)
+        ints.append(b)
+
+    result = result.strip()
+
+    if len(ints) == 0:
+        return result, None, None
+
+    ints = torch.tensor(ints)  # (nparts,)
+    return result, ints, parts_i
+
+
+def convert_prompt(prompt: str, replace_token: bool = False, v='v1'):
     r"""
     Parameters:
         prompt (`str`):
@@ -48,6 +86,9 @@ def convert_prompt(prompt: str, replace_token: bool = False, v1=True):
     Returns:
         `str`: The converted prompt
     """
+    if v == 're':
+        return convert_prompt_re(prompt)
+
     if ':' not in prompt:
         return prompt, None, None
 
@@ -65,7 +106,7 @@ def convert_prompt(prompt: str, replace_token: bool = False, v1=True):
             split_tokens.append(b)
             continue
 
-        if v1:
+        if v == 'v1':
             i, b = b.strip().split(':')
             has_comma = ',' in b
             if has_comma:

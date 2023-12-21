@@ -1,3 +1,4 @@
+import argparse
 import gc
 import os
 import shutil
@@ -5,8 +6,6 @@ import shutil
 import gradio as gr
 import requests
 import torch
-import traceback
-import argparse
 
 from dreamcreature.pipeline import create_args, load_pipeline
 
@@ -67,27 +66,42 @@ ID2NAME = open('data/dogs/class_names.txt').readlines()
 ID2NAME = [line.strip() for line in ID2NAME]
 
 
+def process_text(text):
+    pattern = r"<([^:>]+):(\d+)>"
+    result = text
+    offset = 0
+
+    part2id = []
+
+    for match in re.finditer(pattern, text):
+        key = match.group(1)
+        clsid = int(match.group(2))
+        clsid = min(max(clsid, 1), 200)  # must be 1~200
+
+        replacement = f"<{MAPPING[key]}:{clsid - 1}>"
+        start, end = match.span()
+
+        # Adjust the start and end positions based on the offset from previous replacements
+        start += offset
+        end += offset
+
+        # Replace the matched text with the replacement
+        result = result[:start] + replacement + result[end:]
+
+        # Update the offset for the next replacement
+        offset += len(replacement) - (end - start)
+
+        part2id.append(f'{MAPPING[key]}: {ID2NAME[clsid - 1]}')
+
+    return result, part2id
+
+
 def generate_images(prompt, negative_prompt, num_inference_steps, guidance_scale, num_images, seed):
     generator = torch.Generator(device='cuda')
     generator = generator.manual_seed(int(seed))
 
-    part2id = []
-
-    tokens = prompt.split(' ')
-    for t in tokens:
-        for k, v in MAPPING.items():
-            if t.startswith(f'<{k}:') and (t.endswith('>') or t.endswith('>,') or t.endswith('>.')):
-                i, b = t.split(':')
-                bnum = ''.join([char for char in b if char.isdigit()])
-                clsid = abs(int(bnum))
-                part2id.append(f'{k}: {ID2NAME[clsid]}')
-                break
-
-    for k, v in MAPPING.items():
-        if f'<{k}:' in prompt:
-            prompt = prompt.replace(f'<{k}:', f'<{v}:')
-        if f'<{k}:' in negative_prompt:
-            negative_prompt = negative_prompt.replace(f'<{k}:', f'<{v}:')
+    prompt, part2id = process_text(prompt)
+    negative_prompt, _ = process_text(negative_prompt)
 
     try:
         images = pipe(prompt,
