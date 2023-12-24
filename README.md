@@ -67,7 +67,7 @@ Creative generation:
 ### Usage
 
 1. A demo is available on
-   the [`kamwoh/dreamcreature` HuggingFace Space](https://huggingface.co/spaces/kamwoh/dreamcreature). (Very very slow
+   the [`kamwoh/dreamcreature` Hugging Face Space](https://huggingface.co/spaces/kamwoh/dreamcreature). (Very very slow
    due to CPU only)
 2. You can run the demo on a
    Colab: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kamwoh/dreamcreature/blob/master/dreamcreature_gradio.ipynb).
