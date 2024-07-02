@@ -2,6 +2,10 @@
   
 # DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination
 
+# PartCraft: Crafting Creative Objects by Parts (ECCV 2024)
+
+The paper was re-written and accepted by ECCV 2024!
+
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 [![Paper](http://img.shields.io/badge/Paper-arxiv.2311.15477-B31B1B.svg)](https://arxiv.org/abs/2311.15477)
 [![Page Views Count](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56/blue.svg)](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56 "Get your own page views count badge on badges.toozhao.com")
@@ -88,11 +92,21 @@ Creative generation:
 ### Citation
 
 ```
-@misc{ng2023dreamcreature,
-      title={DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination},
-      author={Kam Woh Ng and Xiatian Zhu and Yi-Zhe Song and Tao Xiang},
-      year={2023},
-      eprint={2311.15477},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}}
+@inproceedings{
+  ng2024partcraft,
+  title={PartCraft: Crafting Creative Objects by Parts},
+  author={Kam Woh Ng and Xiatian Zhu and Yi-Zhe Song and Tao Xiang},
+  booktitle=ECCV,
+  year={2024}
+}
+
+@misc{
+  ng2023dreamcreature,
+  title={DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination},
+  author={Kam Woh Ng and Xiatian Zhu and Yi-Zhe Song and Tao Xiang},
+  year={2023},
+  eprint={2311.15477},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV}
+}
 ```
