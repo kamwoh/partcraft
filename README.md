@@ -2,10 +2,6 @@
   
 # PartCraft: Crafting Creative Objects by Parts (ECCV 2024)
 
-# DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination
-
-The paper was re-written and accepted by ECCV 2024!
-
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 [![Paper](http://img.shields.io/badge/Paper-arxiv.2311.15477-B31B1B.svg)](https://arxiv.org/abs/2311.15477)
 [![Page Views Count](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56/blue.svg)](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56 "Get your own page views count badge on badges.toozhao.com")
@@ -88,6 +84,10 @@ Creative generation:
    paper.
 4. SDXL version also available (see `run_sdxl_sup.sh`) but due to resource limitation, we cannot efficiently train a
    model, hence we do not have a pre-trained model on SDXL.
+
+### Notes
+
+1. The original paper title was: `DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination`
 
 ### Citation
 
