@@ -1,8 +1,8 @@
 <div align="center">
   
-# DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination
-
 # PartCraft: Crafting Creative Objects by Parts (ECCV 2024)
+
+# DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination
 
 The paper was re-written and accepted by ECCV 2024!
 
