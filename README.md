@@ -4,7 +4,7 @@
 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 [![Paper](http://img.shields.io/badge/Paper-arxiv.2311.15477-B31B1B.svg)](https://arxiv.org/abs/2311.15477)
-[![Page Views Count](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56/blue.svg)](https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56 "Get your own page views count badge on badges.toozhao.com")
+[![Paper](http://img.shields.io/badge/Paper-arxiv.2407.04604-B31B1B.svg)](https://arxiv.org/abs/2407.04604)
 [![Hugging Face](https://img.shields.io/badge/DreamCreature-%F0%9F%A4%97%20Hugging%20Face-blue)](https://huggingface.co/spaces/kamwoh/dreamcreature)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kamwoh/dreamcreature/blob/master/dreamcreature_gradio.ipynb)
 
