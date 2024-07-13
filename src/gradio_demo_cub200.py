@@ -117,18 +117,18 @@ def generate_images(prompt, negative_prompt, num_inference_steps, guidance_scale
     return images, '; '.join(part2id)
 
 
-with gr.Blocks(title="DreamCreature") as demo:
+with gr.Blocks(title="PartCraft") as demo:
     with gr.Row():
         gr.Markdown(
             """
-            # DreamCreature (CUB-200-2011)
+            # PartCraft (CUB-200-2011)
             To create your own creature, you can type:
 
             `"a photo of a <head:id> <wing:id> bird"` where `id` ranges from 1~200 (200 classes corresponding to CUB-200-2011)
 
             For instance `"a photo of a <head:17> <wing:18> bird"` using head of `cardinal (17)` and wing of `spotted catbird (18)`
 
-            Please see `id` in https://github.com/kamwoh/dreamcreature/blob/master/src/data/cub200_2011/class_names.txt
+            Please see `id` in https://github.com/kamwoh/partcraft/blob/master/src/data/cub200_2011/class_names.txt
 
             You can also try any prompt you like such as:
 
