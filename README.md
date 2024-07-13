@@ -6,7 +6,7 @@
 [![Paper](http://img.shields.io/badge/Paper-arxiv.2311.15477-B31B1B.svg)](https://arxiv.org/abs/2311.15477)
 [![Paper](http://img.shields.io/badge/Paper-arxiv.2407.04604-B31B1B.svg)](https://arxiv.org/abs/2407.04604)
 [![Hugging Face](https://img.shields.io/badge/DreamCreature-%F0%9F%A4%97%20Hugging%20Face-blue)](https://huggingface.co/spaces/kamwoh/dreamcreature)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kamwoh/dreamcreature/blob/master/dreamcreature_gradio.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kamwoh/partcraft/blob/master/dreamcreature_gradio.ipynb)
 
 </div>
 
