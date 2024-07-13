@@ -10,14 +10,14 @@ import torch
 from dreamcreature.pipeline import create_args, load_pipeline
 
 CUB_DESCRIPTION = """
-# DreamCreature (CUB-200-2011)
+# PartCraft (CUB-200-2011)
 To create your own creature, you can type:
 
 `"a photo of a <head:id> <wing:id> bird"` where `id` ranges from 1~200 (200 classes corresponding to CUB-200-2011)
 
 For instance `"a photo of a <head:17> <wing:18> bird"` using head of `cardinal (17)` and wing of `spotted catbird (18)`
 
-Please see `id` in https://github.com/kamwoh/dreamcreature/blob/master/src/data/cub200_2011/class_names.txt
+Please see `id` in https://github.com/kamwoh/partcraft/blob/master/src/data/cub200_2011/class_names.txt
 
 You can also try any prompt you like such as:
 
@@ -34,14 +34,14 @@ The current available parts are: `head`, `body`, `wing`, `tail`, and `leg`
 """
 
 DOG_DESCRIPTION = """
-# DreamCreature (Stanford Dogs)
+# PartCraft (Stanford Dogs)
 To create your own creature, you can type:
 
 `"a photo of a <nose:id> <ear:id> dog"` where `id` ranges from 0~119 (120 classes corresponding to Stanford Dogs)
 
 For instance `"a photo of a <nose:2> <ear:112> dog"` using head of `maltese dog (2)` and wing of `cardigan (112)`
 
-Please see `id` in https://github.com/kamwoh/dreamcreature/blob/master/src/data/dogs/class_names.txt
+Please see `id` in https://github.com/kamwoh/partcraft/blob/master/src/data/dogs/class_names.txt
 
 Sub-concept transfer: `"a photo of a <ear:112> cat"`
 
