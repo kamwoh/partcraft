@@ -1,6 +1,7 @@
 torch
 torchvision
-git+https://github.com/huggingface/diffusers
+diffusers==0.25.0
+peft==0.1.0
 transformers
 torchpq
 omegaconf
