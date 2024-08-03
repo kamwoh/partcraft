@@ -89,6 +89,14 @@ Creative generation:
 
 1. The original paper title was: `DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination`
 
+### Todo
+ 
+- [ ] Pre-trained model on unsupervised KMeans Labels as we used in the paper (CUB200)
+- [ ] Pre-trained model on unsupervised KMeans Labels as we used in the paper (Stanford Dogs)
+- [ ] Evaluation script (EMR & CoSim)
+- [ ] Update readme
+- [ ] Update website
+
 ### Citation
 
 ```
