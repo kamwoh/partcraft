@@ -707,7 +707,8 @@ class DreamCreatureSDPipeline(StableDiffusionPipeline):
 
 def create_args(output_dir, num_parts=8, num_k_per_part=256):
     args = OmegaConf.create({
-        'pretrained_model_name_or_path': 'runwayml/stable-diffusion-v1-5',
+        # 'pretrained_model_name_or_path': 'runwayml/stable-diffusion-v1-5',
+        'pretrained_model_name_or_path': 'bdsqlsz/stable-diffusion-v1-5',
         'num_parts': num_parts,
         'num_k_per_part': num_k_per_part,
         'revision': None,
