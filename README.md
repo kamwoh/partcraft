@@ -10,7 +10,7 @@
 
 </div>
 
-![overview](docs/assets/fig1.png)
+![overview](docs/assets/newfig1.png)
 
 **Abstract**: Recent text-to-image (T2I) generative models allow for high-quality synthesis following either text
 instructions or visual examples. Despite their capabilities, these models face limitations in creating new, detailed
