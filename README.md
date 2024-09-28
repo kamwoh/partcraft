@@ -1,5 +1,5 @@
 <div align="center">
-  
+
 # PartCraft: Crafting Creative Objects by Parts (ECCV 2024)
 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
@@ -12,43 +12,26 @@
 
 ![overview](docs/assets/newfig1.png)
 
-**Abstract**: Recent text-to-image (T2I) generative models allow for high-quality synthesis following either text
-instructions or visual examples. Despite their capabilities, these models face limitations in creating new, detailed
-creatures within specific categories (e.g., virtual dog or bird species), which are valuable in digital asset creation
-and biodiversity analysis.
-To bridge this gap, we introduce a novel task, **Virtual Creatures Generation**: Given a set of unlabeled images of the
-target concepts (e.g., 200 bird species), we aim to train a T2I model capable of creating new, hybrid concepts within
-diverse backgrounds and contexts.
-We propose a new method called **DreamCreature**, which identifies and extracts the underlying sub-concepts (e.g., body
-parts of a specific species) in an unsupervised manner. The T2I thus adapts to generate novel concepts (e.g., new bird
-species) with faithful structures and photorealistic appearance by seamlessly and flexibly composing learned
-sub-concepts. To enhance sub-concept fidelity and disentanglement, we extend the textual inversion technique by
-incorporating an additional projector and tailored attention loss regularization. Extensive experiments on two
-fine-grained image benchmarks demonstrate the superiority of DreamCreature over prior art alternatives in both
-qualitative and quantitative evaluation. Ultimately, the learned sub-concepts facilitate diverse creative applications,
-including innovative consumer product designs and nuanced property modifications.
+**Abstract**: This paper propels creative control in generative visual AI by allowing users to "select". Departing from traditional text or sketch-based methods, we for the first time allow users to choose visual concepts by parts for their creative endeavors. The outcome is fine-grained generation that precisely captures selected visual concepts, ensuring a holistically faithful and plausible result. To achieve this, we first parse objects into parts through unsupervised feature clustering. Then, we encode parts into text tokens and introduce an entropy-based normalized attention loss that operates on them. This loss design enables our model to learn generic prior topology knowledge about object's part composition, and further generalize to novel part compositions to ensure the generation looks holistically faithful. Lastly, we employ a bottleneck encoder to project the part tokens. This not only enhances fidelity but also accelerates learning, by leveraging shared knowledge and facilitating information exchange among instances. Visual results in the paper and supplementary material showcase the compelling power of **PartCraft** in crafting highly customized, innovative creations, exemplified by the "charming" and creative birds.
 
 
 ### Methodology
 
-![sourceAB](docs/assets/fig4.png)
+![methodology](docs/assets/newfig4.png)
 
-Overview of our DreamCreature. (Left) Discovering sub-concepts within a semantic hierarchy involves partitioning each
-image
-into distinct parts and forming semantic clusters across unlabeled training data. (Right) These clusters are organized
-into a dictionary,
-and their semantic embeddings are learned through a textual inversion approach. For instance, a text description
-like `a photo of a
-[Head,42] [Wing,87]...` guides the optimization of the corresponding textual embedding by reconstructing the associated
-image. To
-promote disentanglement among learned concepts, we minimize a specially designed attention loss, denoted as
+Overview of our PartCraft. (Left) Part discovery within a semantic hierarchy involves partitioning each
+image into distinct parts and forming semantic clusters across unlabeled training data.
+(Right) All parts are organized into a dictionary, and their semantic embeddings are learned through a textual inversion approach.
+For instance, a text description like `a photo of a [Head,42] [Wing,87]...` guides the optimization of the corresponding textual embedding by reconstructing the associated image.
+To improve generation fidelity, we incorporate a bottleneck encoder $f$ (MLP) to compute the embedding $y$ as input to the text encoder.
+To promote disentanglement among learned parts, we minimize a specially designed attention loss, denoted as
 $\mathcal{L}_{attn}$.
 
 ### Mixing sub-concepts
 
 ![sourceAB](docs/assets/fig2.png)
 
-Integrating a specific sub-concept (e.g., body, head, or even background) of a source concept B to the target concept A.
+Integrating a specific part (e.g., body, head, or even background) of a source concept B to the target concept A.
 
 ### Our results
 
@@ -90,7 +73,7 @@ Creative generation:
 1. The original paper title was: `DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination`
 
 ### Todo
- 
+
 - [ ] Pre-trained model on unsupervised KMeans Labels as we used in the paper (CUB200)
 - [ ] Pre-trained model on unsupervised KMeans Labels as we used in the paper (Stanford Dogs)
 - [ ] Evaluation script (EMR & CoSim)

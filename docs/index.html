@@ -7,8 +7,7 @@
 
     <title>DreamCreature</title>
 
-    <meta name="description"
-        content="DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination">
+    <meta name="description" content="PartCraft: Crafting Creative Objects by Parts">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- <base href="/"> -->
@@ -33,8 +32,8 @@
 
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
-    </script>
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+        </script>
 
     <link rel="stylesheet" href="./css/dics.min.css">
     <script src="./js/dics.min.js"></script>
@@ -56,8 +55,8 @@
     <div class="container" id="main">
         <div class="row">
             <h2 class="col-md-12 text-center">
-               &#128038;<b>DreamCreature</b>: Crafting Photorealistic Virtual Creatures from Imagination &#128038;</br>
-<!--                 <small>
+                &#128038;<b>PartCraft</b>: Crafting Creative Objects by Parts (ECCV 2024) &#128038;</br>
+                <!--                 <small>
                     arXiv
                 </small> -->
                 <img src="https://badges.toozhao.com/badges/01HG2ZDZV8WJ73GSR6PXBXAZ56/blue.svg" />
@@ -68,17 +67,17 @@
                 <ul class="list-inline">
                     <li>
                         <a href="https://kamwoh.github.io/">
-                          Kam Woh Ng<sup>1,2</sup>
+                            Kam Woh Ng<sup>1,2</sup>
                         </a>
                     </li>
                     <li>
                         <a href="https://surrey-uplab.github.io/">
-                          Xiatian Zhu<sup>1,3</sup>
+                            Xiatian Zhu<sup>1,3</sup>
                         </a>
                     </li>
                     <li>
                         <a href="https://www.surrey.ac.uk/people/yi-zhe-song">
-                          Yi-Zhe Song<sup>1,2</sup>
+                            Yi-Zhe Song<sup>1,2</sup>
                         </a>
                     </li>
                     <li>
@@ -106,26 +105,31 @@
             <div class="col-md-12 text-center">
                 <ul class="nav nav-pills nav-justified">
                     <li>
-                        <a href="https://arxiv.org/abs/2311.15477">
-<!--                             <image src="/assets/img/merf/paper.png" height="120px"> -->
-                                <h4><strong>Paper</strong></h4>
+                        <a href="https://arxiv.org/abs/2407.04604">
+                            <!--                             <image src="/assets/img/merf/paper.png" height="120px"> -->
+                            <h4><strong>Paper</strong></h4>
                         </a>
                     </li>
                     <li>
-                        <a href="https://github.com/kamwoh/dreamcreature">
-<!--                             <image src="/assets/img/merf/github_pad.png" height="120px"> -->
-                                <h4><strong>Code</strong></h4>
+                        <a href="https://github.com/kamwoh/partcraft">
+                            <!--                             <image src="/assets/img/merf/github_pad.png" height="120px"> -->
+                            <h4><strong>Code</strong></h4>
                         </a>
                     </li>
                     <li>
                         <a href="#playground">
-<!--                             <image src="/assets/img/merf/github_pad.png" height="120px"> -->
-                                <h4><strong>Playground</strong></h4>
+                            <!--                             <image src="/assets/img/merf/github_pad.png" height="120px"> -->
+                            <h4><strong>Playground</strong></h4>
                         </a>
                     </li>
                     <li>
                         <a href="https://youtu.be/918yi7Er4Iw">
-                            <h4><strong>Video</strong></h4>
+                            <h4><strong>Video (Demo)</strong></h4>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://youtu.be/QRNyAxRuru0">
+                            <h4><strong>Video (Presentation)</strong></h4>
                         </a>
                     </li>
                 </ul>
@@ -135,11 +139,12 @@
 
         <div class="row">
             <div class="col-md-12">
-                <image src="assets/fig1.png" style="width:100%;" class="img-responsive center-block" alt="overview"><br>
+                <image src="assets/newfig1.png" style="width:100%;" class="img-responsive center-block" alt="overview">
+                    <br>
             </div>
         </div>
 
-<!--         <div class="row">
+        <!--         <div class="row">
             <div class="col-md-8 col-md-offset-1">
                 <h3>
                     Video
@@ -160,7 +165,19 @@
                     <b>Abstract</b>
                 </h3>
                 <p class="text-justify">
-                    Recent text-to-image (T2I) generative models allow for high-quality synthesis following either text instructions or visual examples. Despite their capabilities, these models face limitations in creating new, detailed creatures within specific categories (e.g., virtual dog or bird species), which are valuable in digital asset creation and biodiversity analysis. To bridge this gap, we introduce a novel task, Virtual Creatures Generation: Given a set of unlabeled images of the target concepts (e.g., 200 bird species), we aim to train a T2I model capable of creating new, hybrid concepts within diverse backgrounds and contexts. We propose a new method called DreamCreature, which identifies and extracts the underlying sub-concepts (e.g., body parts of a specific species) in an unsupervised manner. The T2I thus adapts to generate novel concepts (e.g., new bird species) with faithful structures and photorealistic appearance by seamlessly and flexibly composing learned sub-concepts. To enhance sub-concept fidelity and disentanglement, we extend the textual inversion technique by incorporating an additional projector and tailored attention loss regularization. Extensive experiments on two fine-grained image benchmarks demonstrate the superiority of DreamCreature over prior art alternatives in both qualitative and quantitative evaluation. Ultimately, the learned sub-concepts facilitate diverse creative applications, including innovative consumer product designs and nuanced property modifications.
+                    This paper propels creative control in generative visual AI by allowing users to "select". Departing
+                    from traditional text or sketch-based methods, we for the first time allow users to choose visual
+                    concepts by parts for their creative endeavors. The outcome is fine-grained generation that
+                    precisely captures selected visual concepts, ensuring a holistically faithful and plausible result.
+                    To achieve this, we first parse objects into parts through unsupervised feature clustering. Then, we
+                    encode parts into text tokens and introduce an entropy-based normalized attention loss that operates
+                    on them. This loss design enables our model to learn generic prior topology knowledge about object's
+                    part composition, and further generalize to novel part compositions to ensure the generation looks
+                    holistically faithful. Lastly, we employ a bottleneck encoder to project the part tokens. This not
+                    only enhances fidelity but also accelerates learning, by leveraging shared knowledge and
+                    facilitating information exchange among instances. Visual results in the paper and supplementary
+                    material showcase the compelling power of <b>PartCraft</b> in crafting highly customized, innovative
+                    creations, exemplified by the "charming" and creative birds.
                 </p>
             </div>
         </div>
@@ -171,29 +188,37 @@
                     <b>Methodology</b>
                 </h3>
                 <br>
-                <image src="assets/fig4.png" style="width:100%;" class="img-responsive center-block" alt="overview">
-                <br>
-                <p class="text-justify">
-                     Overview of our DreamCreature. (Left) Discovering sub-concepts within a semantic hierarchy involves partitioning each image
-                     into distinct parts and forming semantic clusters across unlabeled training data. (Right) These clusters are organized into a dictionary,
-                     and their semantic embeddings are learned through a textual inversion approach. For instance, a text description like "a photo of a
-                     [Head,42] [Wing,87]..." guides the optimization of the corresponding textual embedding by reconstructing the associated image. To
-                     promote disentanglement among learned concepts, we minimize a specially designed attention loss, denoted as \( \mathcal{L}_{attn} \).
-                </p>
+                <image src="assets/newfig4.png" style="width:100%;" class="img-responsive center-block" alt="overview">
+                    <br>
+                    <p class="text-justify">
+                        Overview of our PartCraft. (Left) Part discovery within a semantic hierarchy involves
+                        partitioning each
+                        image into distinct parts and forming semantic clusters across unlabeled training data.
+                        (Right) All parts are organized into a dictionary, and their semantic embeddings are learned
+                        through a textual inversion approach.
+                        For instance, a text description like <code>a photo of a [Head,42] [Wing,87]...</code> guides
+                        the
+                        optimization of the corresponding textual embedding by reconstructing the associated image.
+                        To improve generation fidelity, we incorporate a bottleneck encoder $f$ (MLP) to compute the
+                        embedding $y$ as input to the text encoder.
+                        To promote disentanglement among learned parts, we minimize a specially designed attention loss,
+                        denoted as \( \mathcal{L}_{attn} \).
+                    </p>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-12">
                 <h3>
-                    <b>Mixing Sub-concepts</b>
+                    <b>Unseen part composition</b>
                 </h3>
                 <br>
                 <image src="assets/fig2.png" style="width:100%;" class="img-responsive center-block" alt="overview">
-                <br>
-                <p class="text-justify">
-                    Integrating a specific sub-concept (e.g., body, head, or even background) of a source concept B to the target concept A.
-                </p>
+                    <br>
+                    <p class="text-justify">
+                        Integrating a specific part (e.g., body, head, or even background) of a source concept B
+                        to the target concept A.
+                    </p>
             </div>
         </div>
 
@@ -203,20 +228,25 @@
                     <b>Comparison</b>
                 </h3>
                 <br>
-                <image src="assets/compare_full.png" style="width:100%;" class="img-responsive center-block" alt="overview">
-                <br>
-                <p class="text-justify">
-                    Visual comparison on 4-species (specified on the top row) hybrid generation. The last column indicates generated images with
-different styles (i.e., DSLR, Van Gogh, Oil Painting, Pencil Drawing).
-                    While all images appear realistic, most methods struggle to assemble all 4 subconcepts. In contrast, our methods successfully combine
-                    4 different sub-concepts from 4 different species, demonstrating the superior ability of our approach to sub-concept composition.
-                </p>
-                <br>
-                <h4>
-                    <b>More examples</b>
-                </h4>
-                <br>
-                <image src="assets/moreexamples.png" style="width:100%;" class="img-responsive center-block" alt="overview">
+                <image src="assets/compare_full.png" style="width:100%;" class="img-responsive center-block"
+                    alt="overview">
+                    <br>
+                    <p class="text-justify">
+                        Visual comparison on 4-species (specified on the top row) hybrid generation. The last column
+                        indicates generated images with
+                        different styles (i.e., DSLR, Van Gogh, Oil Painting, Pencil Drawing).
+                        While all images appear realistic, most methods struggle to assemble all 4 subconcepts. In
+                        contrast, our methods successfully combine
+                        4 different parts from 4 different species, demonstrating the superior ability of our
+                        approach to part composition.
+                    </p>
+                    <br>
+                    <h4>
+                        <b>More examples</b>
+                    </h4>
+                    <br>
+                    <image src="assets/moreexamples.png" style="width:100%;" class="img-responsive center-block"
+                        alt="overview">
             </div>
         </div>
 
@@ -226,28 +256,33 @@ different styles (i.e., DSLR, Van Gogh, Oil Painting, Pencil Drawing).
                     <b>Creative Generation</b>
                 </h3>
                 <br>
-                <image src="assets/creativegeneration.png" style="width:100%;" class="img-responsive center-block" alt="overview">
-                <br>
-                <p class="text-justify">
-                    We demonstrate that not only it can compose subconcepts within the domain of the target concepts (e.g.,
-                    birds), but it can also transfer the learned sub-concepts to and combine with other domains (e.g., cat).
-                    This enables the creation of unique combinations, such as a cat with a dog’s ear.
-                    Leveraging the prior knowledge embedded in Stable Diffusion, DreamCreature can also repurpose learned
-                    sub-concepts to design innovative digital assets.
-                    These examples showcase DreamCreature’s immense potential for diverse and limitless creative applications.
-                </p>
+                <image src="assets/creativegeneration.png" style="width:100%;" class="img-responsive center-block"
+                    alt="overview">
+                    <br>
+                    <p class="text-justify">
+                        We demonstrate that not only it can compose parts within the domain of the target concepts
+                        (e.g.,
+                        birds), but it can also transfer the learned parts to and combine with other domains
+                        (e.g., cat).
+                        This enables the creation of unique combinations, such as a cat with a dog’s ear.
+                        Leveraging the prior knowledge embedded in Stable Diffusion, PartCraft can also repurpose
+                        learned
+                        parts to design innovative digital assets.
+                        These examples showcase PartCraft's immense potential for diverse and limitless creative
+                        applications.
+                    </p>
             </div>
         </div>
 
-<!--        <div class="row">-->
-<!--            <div class="col-md-8 col-md-offset-1">-->
-<!--                <h3>-->
-<!--                    <b>Acknowledgements</b>-->
-<!--                </h3>-->
-<!--                <p class="text-justify">-->
-<!--                </p>-->
-<!--            </div>-->
-<!--        </div>-->
+        <!--        <div class="row">-->
+        <!--            <div class="col-md-8 col-md-offset-1">-->
+        <!--                <h3>-->
+        <!--                    <b>Acknowledgements</b>-->
+        <!--                </h3>-->
+        <!--                <p class="text-justify">-->
+        <!--                </p>-->
+        <!--            </div>-->
+        <!--        </div>-->
 
         <div class="row" id="playground">
             <!-- Column for the selection list -->
@@ -255,7 +290,8 @@ different styles (i.e., DSLR, Van Gogh, Oil Painting, Pencil Drawing).
                 <h3>
                     <b>Playground</b>
                 </h3>
-                These images are generated automatically, so there may occasionally be some NSFW (black) images that the authors have overlooked.
+                These images are generated automatically, so there may occasionally be some NSFW (black) images that the
+                authors have overlooked.
             </div>
             <br>
             <div id="bird">
@@ -268,51 +304,61 @@ different styles (i.e., DSLR, Van Gogh, Oil Painting, Pencil Drawing).
                 <div class="col-md-2" id="dropdown_container_bird">
                     <div>
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_head_bird" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Head
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_head_bird" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_head_bird"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Head
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_head_bird"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
                     <div style="padding-top: 2px">
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_body_bird" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Body
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_body_bird" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_body_bird"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Body
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_body_bird"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
                     <div style="padding-top: 2px">
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_wings_bird" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Wings
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_wings_bird" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_wings_bird"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Wings
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_wings_bird"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
                     <div style="padding-top: 2px">
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_legs_bird" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Legs
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_legs_bird" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_legs_bird"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Legs
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_legs_bird"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
                     <div style="padding-top: 2px">
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_prompts_bird" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Prompts
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_prompts_bird" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_prompts_bird"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Prompts
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_prompts_bird"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
@@ -339,7 +385,7 @@ different styles (i.e., DSLR, Van Gogh, Oil Painting, Pencil Drawing).
                 <div class="col-md-6" style="padding-top: 10px;">
                     <b>Head</b>: <p id="head_display">[...]</p>
                 </div>
-                <div class="col-md-6"  style="padding-top: 10px;">
+                <div class="col-md-6" style="padding-top: 10px;">
                     <b>Body</b>: <p id="body_display">[...]</p>
                 </div>
                 <div class="col-md-6" style="padding-top: 10px;">
@@ -359,51 +405,61 @@ different styles (i.e., DSLR, Van Gogh, Oil Painting, Pencil Drawing).
                 <div class="col-md-2" id="dropdown_container_dog">
                     <div>
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_upper_dog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Upper Face
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_upper_dog" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_upper_dog"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Upper Face
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_upper_dog"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
                     <div style="padding-top: 2px">
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_ears_dog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Ears
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_ears_dog" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_ears_dog"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Ears
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_ears_dog"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
                     <div style="padding-top: 2px">
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_lower_dog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Lower Face
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_lower_dog" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_lower_dog"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Lower Face
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_lower_dog"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
                     <div style="padding-top: 2px">
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_body_dog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Body
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_body_dog" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_body_dog"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Body
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_body_dog"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
                     <div style="padding-top: 2px">
                         <div class="dropdown" style="display: inline-block; width: 100%;">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_prompts_dog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"  style="width: 100%;">
-                            Prompts
-                            <span class="caret"></span>
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_prompts_dog" style="width: 240px;">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu_prompts_dog"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width: 100%;">
+                                Prompts
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="subconcepts_prompts_dog"
+                                style="width: 240px;">
                             </ul>
                         </div>
                     </div>
@@ -447,14 +503,13 @@ different styles (i.e., DSLR, Van Gogh, Oil Painting, Pencil Drawing).
                 <h3>
                     <b>Citation</b>
                 </h3>
-                <pre><code>@misc{ng2023dreamcreature,
-      title={DreamCreature: Crafting Photorealistic Virtual Creatures from Imagination},
-      author={Kam Woh Ng and Xiatian Zhu and Yi-Zhe Song and Tao Xiang},
-      year={2023},
-      eprint={2311.15477},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
-}</code></pre>
+                <pre><code>@inproceedings{
+                    ng2024partcraft,
+                    title={PartCraft: Crafting Creative Objects by Parts},
+                    author={Kam Woh Ng and Xiatian Zhu and Yi-Zhe Song and Tao Xiang},
+                    booktitle=ECCV,
+                    year={2024}
+                  }</code></pre>
             </div>
         </div>
     </div>
