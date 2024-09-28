@@ -27,7 +27,7 @@ To improve generation fidelity, we incorporate a bottleneck encoder $f$ (MLP) to
 To promote disentanglement among learned parts, we minimize a specially designed attention loss, denoted as
 $\mathcal{L}_{attn}$.
 
-### Mixing sub-concepts
+### Unseen part compositions
 
 ![sourceAB](docs/assets/fig2.png)
 
@@ -59,8 +59,7 @@ Creative generation:
 
 ### Training
 
-1. Check out `train_kmeans_segmentation.ipynb` to obtain a DINO-based KMeans Segmentation that can obtain the "parts"/"
-   sub-concepts". This is to obtain the "attention mask" used during the training.
+1. Check out `train_kmeans_segmentation.ipynb` to obtain a DINO-based KMeans Segmentation that can segment the parts. This is to obtain the "attention mask" used during the training.
 2. Assuming no labels, we can also use the kmeans labels as a supervision, otherwise we can use the supervised labels (
    such as ground-truth class) as we can obtain higher quality of reconstruction.
 3. Check out `run_sd_sup.sh` or `run_sd_unsup.sh` for training. All hyperparameters in these scripts are used in the
